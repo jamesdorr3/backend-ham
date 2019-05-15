@@ -15,7 +15,6 @@ class SearchController < ApplicationController
     }
     url = "https://trackapi.nutritionix.com/v2"
 
-    # byebug
     if search_name
       resp = RestClient.post("#{url}/natural/nutrients", {'query': search_name }, headers= headers)
     end
@@ -23,7 +22,6 @@ class SearchController < ApplicationController
       resp = RestClient.get("#{url}/search/item?nix_item_id=#{search_id}", headers= headers)
     end
     resp = JSON.parse(resp)['foods'][0]
-    byebug
     food = Food.find_or_create_by(
       name: resp['food_name'],
       serving_grams: resp['serving_weight_grams'],
@@ -36,21 +34,15 @@ class SearchController < ApplicationController
       dietary_fiber: resp['nf_dietary_fiber'],
       potassium: resp['nf_potassium'],
       sodium: resp['nf_sodium'],
-      # serving_unit: resp['serving_unit'],
-      # brand: resp['brand_name'],
+      serving_unit_name: resp['serving_unit'],
+      serving_unit_amount: resp['serving_qty'],
+      brand: resp['brand_name'],
       sugars: resp['nf_sugars']
     )
-
-    choice = Choice.create(user_id: 1, food: food, amount: food.serving_grams, measure: 'grams')
+    ############################### HOW CAN WE CHANGE USER_ID?
+    choice = Choice.create(user_id: 2, food: food, amount: food.serving_grams, measure: 'grams')
     
-    # byebug
     render json: choice
-
-    # resp.foods[0].food_name nf_calories 
-    # _cholesterol _dietary_fiber _potassium 
-    # _protein _saturated_fat _sodium _sugars 
-    # _total_carbohydrate _total_fat serving_unit 
-    # serving_weight_grams
 
   end
 
