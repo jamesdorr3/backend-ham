@@ -31,9 +31,11 @@ class SearchController < ApplicationController
       # serving_unit: resp['serving_unit'],
       sugars: resp['nf_sugars']
     )
+
+    choice = Choice.create(user_id: 1, food: food, amount: food.serving_grams, measure: 'grams')
     
     # byebug
-    render json: food
+    render json: choice
 
     # resp.foods[0].food_name nf_calories 
     # _cholesterol _dietary_fiber _potassium 
