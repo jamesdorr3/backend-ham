@@ -1,5 +1,5 @@
 require 'rest-client'
-class SearchController < ApplicationController
+class AutocompleteController < ApplicationController
 
   def search
     search_phrase = params['q']
@@ -12,8 +12,7 @@ class SearchController < ApplicationController
     }
     url = "https://trackapi.nutritionix.com/v2"
 
-    resp = RestClient.post("#{url}/natural/nutrients", {'query': search_phrase }, headers= headers)
-    # byebug
+    resp = RestClient.get("#{url}/search/instant?query=#{search_phrase}", headers= headers)
     render json: resp
 
   end
