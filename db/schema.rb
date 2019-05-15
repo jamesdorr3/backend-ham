@@ -29,7 +29,9 @@ ActiveRecord::Schema.define(version: 2019_05_15_141049) do
   create_table "foods", force: :cascade do |t|
     t.string "name"
     t.integer "serving_grams"
-    t.float "serving_tsp"
+    t.string "serving_unit_name"
+    t.float "serving_unit_amount"
+    t.string "brand"
     t.float "calories"
     t.float "fat"
     t.float "carbs"
@@ -41,7 +43,6 @@ ActiveRecord::Schema.define(version: 2019_05_15_141049) do
     t.float "sodium"
     t.float "sugars"
     t.string "unit_size"
-    t.string "brand"
     t.bigint "upc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

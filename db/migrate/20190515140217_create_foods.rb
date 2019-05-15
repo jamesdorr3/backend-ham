@@ -3,7 +3,9 @@ class CreateFoods < ActiveRecord::Migration[5.2]
     create_table :foods do |t|
       t.string :name
       t.integer :serving_grams
-      t.float :serving_tsp
+      t.string :serving_unit_name
+      t.float :serving_unit_amount
+      t.string :brand
       t.float :calories
       t.float :fat
       t.float :carbs
