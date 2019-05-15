@@ -4,7 +4,8 @@ require 'json'
 class SearchController < ApplicationController
 
   def search
-    search_phrase = params['q']
+    search_name = params['name']
+    search_id = params['id']
     id =  Rails.application.credentials.nix[:id]
     key = Rails.application.credentials.nix[:key]
     headers = {
@@ -14,8 +15,15 @@ class SearchController < ApplicationController
     }
     url = "https://trackapi.nutritionix.com/v2"
 
-    resp = RestClient.post("#{url}/natural/nutrients", {'query': search_phrase }, headers= headers)
+    # byebug
+    if search_name
+      resp = RestClient.post("#{url}/natural/nutrients", {'query': search_name }, headers= headers)
+    end
+    if search_id
+      resp = RestClient.get("#{url}/search/item?nix_item_id=#{search_id}", headers= headers)
+    end
     resp = JSON.parse(resp)['foods'][0]
+    byebug
     food = Food.find_or_create_by(
       name: resp['food_name'],
       serving_grams: resp['serving_weight_grams'],
@@ -29,6 +37,7 @@ class SearchController < ApplicationController
       potassium: resp['nf_potassium'],
       sodium: resp['nf_sodium'],
       # serving_unit: resp['serving_unit'],
+      # brand: resp['brand_name'],
       sugars: resp['nf_sugars']
     )
 
