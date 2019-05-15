@@ -11,5 +11,5 @@ Food.destroy_all
 User.destroy_all
 
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
-eggs = Food.create(name: 'eggs', unit_size: 'large', serving_grams: 50, calories: 71.5, cholesterol: 186, dietary_fiber: 0, potassium: 69, protein: 6.28, saturated_fat: 1.56, sodium: 71, sugars: 0.19, carbs: 0.36, fat: 4.76)
-Choice.create(user: james, food: eggs, amount: 1, measure: 'unit')
+# eggs = Food.create(name: 'eggs', unit_size: 'large', serving_grams: 50, calories: 71.5, cholesterol: 186, dietary_fiber: 0, potassium: 69, protein: 6.28, saturated_fat: 1.56, sodium: 71, sugars: 0.19, carbs: 0.36, fat: 4.76)
+# Choice.create(user: james, food: eggs, amount: 1, measure: 'unit')
