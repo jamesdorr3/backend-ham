@@ -11,6 +11,11 @@ class ChoicesController < ApplicationController
     # byebug
   end
 
+  def destroy
+    choice = Choice.find(params[:id])
+    choice.destroy
+  end
+
   private
 
   def choice_params
