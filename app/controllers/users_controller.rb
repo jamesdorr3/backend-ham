@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    # byebug
+    byebug
     user = User.find(params[:id])
     user.update(update_user_params)
     user.save
