@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_15_141049) do
+ActiveRecord::Schema.define(version: 2019_05_16_192243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2019_05_15_141049) do
     t.string "measure"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "index"
     t.index ["food_id"], name: "index_choices_on_food_id"
     t.index ["user_id"], name: "index_choices_on_user_id"
   end
@@ -54,6 +55,10 @@ ActiveRecord::Schema.define(version: 2019_05_15_141049) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "calories"
+    t.integer "fat"
+    t.integer "carbs"
+    t.integer "protein"
   end
 
   add_foreign_key "choices", "foods"
