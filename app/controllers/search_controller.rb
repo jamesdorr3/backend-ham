@@ -40,7 +40,7 @@ class SearchController < ApplicationController
       sugars: resp['nf_sugars']
     )
     ############################### HOW CAN WE CHANGE USER_ID?
-    choice = Choice.create(user: User.last, food: food, amount: food.serving_unit_amount, measure: food.serving_unit_name)
+    choice = Choice.create(user: User.last, food: food, amount: food.serving_unit_amount, measure: food.serving_unit_name, index: 999)
     
     render json: choice
 
