@@ -6,10 +6,11 @@ class UsersController < ApplicationController
   end
 
   def update
-    byebug
+    puts params
     user = User.find(params[:id])
     user.update(update_user_params)
     user.save
+    puts user.errors.full_messages
     render :json => user
   end
 
@@ -26,7 +27,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:username, :email, :password, :calories, :fat, :carbs, :protein)
+    params.require(:user).permit(:id, :username, :email, :calories, :fat, :carbs, :protein)
   end
 
   def update_user_params
