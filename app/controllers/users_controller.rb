@@ -6,7 +6,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    puts params
+    puts 'USER RRRRR______________________'
+    puts @user
     user = User.find(params[:id])
     user.update(update_user_params)
     user.save
