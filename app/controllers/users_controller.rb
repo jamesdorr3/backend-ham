@@ -6,14 +6,17 @@ class UsersController < ApplicationController
   end
 
   def update
-    byebug
+    puts 'USER RRRRR______________________'
+    puts @user
     user = User.find(params[:id])
     user.update(update_user_params)
     user.save
+    puts user.errors.full_messages
     render :json => user
   end
 
   def create
+    # byebug
     @user = User.create(user_params)
     if @user.valid?
       @token = encode_token({ user_id: @user.id })
@@ -26,7 +29,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:username, :email, :password, :calories, :fat, :carbs, :protein)
+    params.require(:user).permit(:id, :password, :username, :email, :calories, :fat, :carbs, :protein)
   end
 
   def update_user_params

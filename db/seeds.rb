@@ -6,8 +6,8 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-# Choice.destroy_all
-# User.destroy_all
+Choice.destroy_all
+User.destroy_all
 
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1', fat: 1, carbs: 2, protein: 3)
 # eggs = Food.create(name: 'eggs', unit_size: 'large', serving_grams: 50, calories: 71.5, cholesterol: 186, dietary_fiber: 0, potassium: 69, protein: 6.28, saturated_fat: 1.56, sodium: 71, sugars: 0.19, carbs: 0.36, fat: 4.76)
