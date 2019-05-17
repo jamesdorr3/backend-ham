@@ -1,4 +1,5 @@
 class ChoicesController < ApplicationController
+  skip_before_action :authorized, only: [:update, :destroy]
 
   def index
     render :json => Choice.all

@@ -1,5 +1,6 @@
 require 'rest-client'
 class AutocompleteController < ApplicationController
+  skip_before_action :authorized
 
   def search
     search_phrase = params['q']

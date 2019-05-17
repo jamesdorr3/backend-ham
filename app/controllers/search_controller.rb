@@ -2,6 +2,7 @@ require 'rest-client'
 require 'json'
 
 class SearchController < ApplicationController
+  skip_before_action :authorized
 
   def search
     search_name = params['name']
@@ -40,8 +41,10 @@ class SearchController < ApplicationController
       sugars: resp['nf_sugars']
     )
     ############################### HOW CAN WE CHANGE USER_ID?
-    choice = Choice.create(user: User.last, food: food, amount: food.serving_unit_amount, measure: food.serving_unit_name, index: 999)
-    
+    # byebug
+    choice = Choice.create(user: current_user, food: food, amount: food.serving_unit_amount, measure: food.serving_unit_name, index: Time::new.to_i)
+    puts 'CHOICE ERRORS FULL MESSAGES'
+    puts choice.errors.full_messages
     render json: choice
 
   end
