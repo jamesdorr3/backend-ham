@@ -21,7 +21,7 @@ class ChoicesController < ApplicationController
   private
 
   def choice_params
-    params.require(:choice).permit(:amount, :measure)
+    params.require(:choice).permit(:amount, :measure, :index)
   end
 
 end
