@@ -15,6 +15,16 @@ class AuthController < ApplicationController
     end
   end
 
+  def reauth
+    # byebug
+    token = encode_token({user_id: current_user.id})
+    render json: { user: UserSerializer.new(current_user), jwt: token }, status: :accepted
+    # else
+    #   puts @user.errors.full_messages
+    #   render json: { message: 'Invalid username or password' }, status: :unauthorized
+    # end
+  end
+
   private
 
   def user_login_params
