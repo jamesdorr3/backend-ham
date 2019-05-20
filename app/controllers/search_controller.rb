@@ -4,6 +4,22 @@ require 'json'
 class SearchController < ApplicationController
   skip_before_action :authorized
 
+  def index
+    search_phrase = params['q']
+    id =  Rails.application.credentials.nix[:id]
+    key = Rails.application.credentials.nix[:key]
+    headers = {
+      'Content-Type':'application/json',
+      'x-app-id': id,
+      'x-app-key': key
+    }
+    url = "https://trackapi.nutritionix.com/v2"
+
+    resp = RestClient.get("#{url}/search/instant?query=#{search_phrase}", headers= headers)
+    render json: resp
+
+  end
+
   def search
     search_name = params['name']
     search_id = params['id']
@@ -15,7 +31,7 @@ class SearchController < ApplicationController
       'x-app-key': key
     }
     url = "https://trackapi.nutritionix.com/v2"
-
+    
     if search_name
       resp = RestClient.post("#{url}/natural/nutrients", {'query': search_name }, headers= headers)
     end
@@ -23,7 +39,8 @@ class SearchController < ApplicationController
       resp = RestClient.get("#{url}/search/item?nix_item_id=#{search_id}", headers= headers)
     end
     resp = JSON.parse(resp)['foods'][0]
-    food = Food.find_or_create_by(
+    puts resp
+    food = Food.new(
       name: resp['food_name'],
       serving_grams: resp['serving_weight_grams'],
       calories: resp['nf_calories'],
@@ -40,12 +57,18 @@ class SearchController < ApplicationController
       brand: resp['brand_name'],
       sugars: resp['nf_sugars']
     )
-    ############################### HOW CAN WE CHANGE USER_ID?
-    # byebug
-    choice = Choice.create(user: current_user, food: food, amount: food.serving_unit_amount, measure: food.serving_unit_name, index: Time::new.to_i)
-    puts 'CHOICE ERRORS FULL MESSAGES'
+    choice = Choice.create(
+      category: Category.last, 
+      day: Day.last,
+      nix_name: food.name, 
+      nix_id: resp["nix_item_id"], 
+      amount: food.serving_unit_amount, 
+      measure: food.serving_unit_name, 
+      index: Time::new.to_i)
     puts choice.errors.full_messages
-    render json: choice
+    # to_render = {choice: choice, food: food}
+    # byebug 
+    render json: {choice: choice, food: food}
 
   end
 

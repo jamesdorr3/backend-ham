@@ -9,6 +9,9 @@
 Choice.destroy_all
 User.destroy_all
 
-james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1', fat: 1, carbs: 2, protein: 3)
+james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
+goal = Goal.create(user: james, calories: 2800, fat: 144, carbs: 144, protein: 240)
+today = Day.create(goal: goal)
+category = Category.create(user: james)
 # eggs = Food.create(name: 'eggs', unit_size: 'large', serving_grams: 50, calories: 71.5, cholesterol: 186, dietary_fiber: 0, potassium: 69, protein: 6.28, saturated_fat: 1.56, sodium: 71, sugars: 0.19, carbs: 0.36, fat: 4.76)
 # Choice.create(user: james, food: eggs, amount: 1, measure: 'unit')
