@@ -4,7 +4,7 @@ require 'json'
 class SearchController < ApplicationController
   skip_before_action :authorized
 
-  def index
+  def many
     search_phrase = params['q']
     id =  Rails.application.credentials.nix[:id]
     key = Rails.application.credentials.nix[:key]
@@ -20,7 +20,7 @@ class SearchController < ApplicationController
 
   end
 
-  def search
+  def make_choice
     search_name = params['name']
     search_id = params['id']
     id =  Rails.application.credentials.nix[:id]
@@ -39,7 +39,7 @@ class SearchController < ApplicationController
       resp = RestClient.get("#{url}/search/item?nix_item_id=#{search_id}", headers= headers)
     end
     resp = JSON.parse(resp)['foods'][0]
-    puts resp
+    # puts resp
     food = Food.new(
       name: resp['food_name'],
       serving_grams: resp['serving_weight_grams'],
@@ -69,7 +69,46 @@ class SearchController < ApplicationController
     # to_render = {choice: choice, food: food}
     # byebug 
     render json: {choice: choice, food: food}
-
   end
+  
+  # def get_nix_food
+  #   search_name = params['name']
+  #   search_id = params['id']
+  #   id =  Rails.application.credentials.nix[:id]
+  #   key = Rails.application.credentials.nix[:key]
+  #   headers = {
+  #     'Content-Type':'application/json',
+  #     'x-app-id': id,
+  #     'x-app-key': key
+  #   }
+  #   url = "https://trackapi.nutritionix.com/v2"
+    
+  #   if search_name
+  #     resp = RestClient.post("#{url}/natural/nutrients", {'query': search_name }, headers= headers)
+  #   end
+  #   if search_id
+  #     resp = RestClient.get("#{url}/search/item?nix_item_id=#{search_id}", headers= headers)
+  #   end
+  #   resp = JSON.parse(resp)['foods'][0]
+  #   # puts resp
+  #   food = Food.new(
+  #     name: resp['food_name'],
+  #     serving_grams: resp['serving_weight_grams'],
+  #     calories: resp['nf_calories'],
+  #     fat: resp['nf_total_fat'],
+  #     saturated_fat: resp['nf_saturated_fat'],
+  #     carbs: resp['nf_total_carbohydrate'],
+  #     protein: resp['nf_protein'],
+  #     cholesterol: resp['nf_cholesterol'],
+  #     dietary_fiber: resp['nf_dietary_fiber'],
+  #     potassium: resp['nf_potassium'],
+  #     sodium: resp['nf_sodium'],
+  #     serving_unit_name: resp['serving_unit'],
+  #     serving_unit_amount: resp['serving_qty'],
+  #     brand: resp['brand_name'],
+  #     sugars: resp['nf_sugars']
+  #   )
+  #   render json: food
+  # end
 
 end
