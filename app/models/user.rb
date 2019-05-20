@@ -14,10 +14,10 @@ class User < ApplicationRecord
     self.days.last
   end
 
-  # def last_day_choices_and_foods
-  #   last_day.choices.map do |choice|
-  #     {choice: choice, food: choice.food}
-  #   end
+  def last_day_choices_and_foods
+    last_day.choices.map do |choice|
+      {choice: choice, food: choice.food}
+    end
   end
 
   def last_day_categories
