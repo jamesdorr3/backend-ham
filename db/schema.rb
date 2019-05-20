@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 6) do
   end
 
   create_table "choices", force: :cascade do |t|
-    t.integer "food"
+    t.bigint "food_id"
     t.string "nix_id"
     t.string "nix_name"
     t.bigint "day_id"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 6) do
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_choices_on_category_id"
     t.index ["day_id"], name: "index_choices_on_day_id"
+    t.index ["food_id"], name: "index_choices_on_food_id"
   end
 
   create_table "days", force: :cascade do |t|
@@ -63,9 +64,11 @@ ActiveRecord::Schema.define(version: 6) do
     t.float "sodium"
     t.float "sugars"
     t.string "unit_size"
-    t.bigint "upc"
+    t.string "upc"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_foods_on_user_id"
   end
 
   create_table "goals", force: :cascade do |t|
@@ -91,6 +94,8 @@ ActiveRecord::Schema.define(version: 6) do
   add_foreign_key "categories", "users"
   add_foreign_key "choices", "categories"
   add_foreign_key "choices", "days"
+  add_foreign_key "choices", "foods"
   add_foreign_key "days", "goals"
+  add_foreign_key "foods", "users"
   add_foreign_key "goals", "users"
 end

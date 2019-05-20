@@ -18,7 +18,8 @@ class CreateFoods < ActiveRecord::Migration[5.2]
       t.float :sugars
       t.string :unit_size
       t.string :brand
-      t.bigint :upc
+      t.string :upc
+      t.belongs_to :user, foreign_key: true
 
       t.timestamps
     end

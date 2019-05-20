@@ -1,7 +1,7 @@
 class CreateChoices < ActiveRecord::Migration[5.2]
   def change
     create_table :choices do |t|
-      t.integer :food, foreign_key: true
+      t.belongs_to :food, foreign_key: true
       t.string :nix_id
       t.string :nix_name
       t.belongs_to :day, foreign_key: true
