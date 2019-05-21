@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 6) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.bigint "user_id"
+    t.bigint "index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
