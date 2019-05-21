@@ -1,4 +1,4 @@
 class GoalSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :calories, :fat, :carbs, :protein
   has_one :user
 end
