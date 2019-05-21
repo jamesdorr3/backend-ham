@@ -15,13 +15,13 @@ class User < ApplicationRecord
   end
 
   def last_day_choices_and_foods
-    last_day.choices.map do |choice|
+    last_day.choices.map do |choice| # problem for sign up
       {choice: choice, food: choice.food}
-    end
+    end if last_day
   end
 
   def last_day_categories
-    last_day.categories
+    last_day.categories if last_day
   end
 
 end

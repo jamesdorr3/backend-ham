@@ -15,10 +15,13 @@ class UsersController < ApplicationController
     render :json => user
   end
 
-  def create
+  def create ## problems
     # byebug
     @user = User.create(user_params)
     if @user.valid?
+      Category.create(user: @user)
+      goal = Goal.create(user: @user)
+      Day.create(goal: goal)
       @token = encode_token({ user_id: @user.id })
       render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
     else

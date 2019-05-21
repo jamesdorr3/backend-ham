@@ -22,7 +22,7 @@ class AuthController < ApplicationController
         goals: @user.goals
         }, status: :accepted
     else
-      puts @user.errors.full_messages
+      # puts @user.errors.full_messages
       render json: { message: 'Invalid username or password' }, status: :unauthorized
     end
   end
