@@ -38,6 +38,10 @@ class User < ApplicationRecord
           resp = RestClient.post("#{url}/natural/nutrients", {'query': choice.nix_name }, headers= headers)
         end
         resp = JSON.parse(resp)['foods'][0]
+        puts '#################################################################################'
+        puts resp
+        puts '#################################################################################'
+        
         food = Food.new(
           name: resp['food_name'],
           serving_grams: resp['serving_weight_grams'],
@@ -61,7 +65,7 @@ class User < ApplicationRecord
   end
 
   def categories
-    day.categories if day
+    day.categories.uniq if day
   end
 
 end
