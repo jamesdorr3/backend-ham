@@ -65,7 +65,7 @@ class SearchController < ApplicationController
       amount: food.serving_unit_amount, 
       measure: food.serving_unit_name, 
       index: Time::new.to_i)
-    puts choice.errors.full_messages
+    # puts choice.errors.full_messages
     # to_render = {choice: choice, food: food}
     # byebug 
     render json: {choice: choice, food: food}

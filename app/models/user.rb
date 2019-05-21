@@ -1,3 +1,4 @@
+require 'rest-client'
 class User < ApplicationRecord
   has_secure_password
   # validates :email, uniqueness: {case_sensitive: false}
@@ -10,18 +11,57 @@ class User < ApplicationRecord
   has_many :categories
   has_many :foods
 
-  def last_day
+  def day
     self.days.last
   end
 
-  def last_day_choices_and_foods
-    last_day.choices.map do |choice| # problem for sign up
-      {choice: choice, food: choice.food}
-    end if last_day
+  def goal
+    day.goal
   end
 
-  def last_day_categories
-    last_day.categories if last_day
+  def choice_foods
+    day.choices.map do |choice| # problem for sign up
+      if choice.food
+        {choice: choice, food: choice.food}
+      else
+        id =  Rails.application.credentials.nix[:id]
+        key = Rails.application.credentials.nix[:key]
+        headers = {
+          'Content-Type':'application/json',
+          'x-app-id': id,
+          'x-app-key': key
+        }
+        url = "https://trackapi.nutritionix.com/v2"
+        if choice.nix_id
+          resp = RestClient.get("#{url}/search/item?nix_item_id=#{choice.nix_id}", headers= headers)
+        else
+          resp = RestClient.post("#{url}/natural/nutrients", {'query': choice.nix_name }, headers= headers)
+        end
+        resp = JSON.parse(resp)['foods'][0]
+        food = Food.new(
+          name: resp['food_name'],
+          serving_grams: resp['serving_weight_grams'],
+          calories: resp['nf_calories'],
+          fat: resp['nf_total_fat'],
+          saturated_fat: resp['nf_saturated_fat'],
+          carbs: resp['nf_total_carbohydrate'],
+          protein: resp['nf_protein'],
+          cholesterol: resp['nf_cholesterol'],
+          dietary_fiber: resp['nf_dietary_fiber'],
+          potassium: resp['nf_potassium'],
+          sodium: resp['nf_sodium'],
+          serving_unit_name: resp['serving_unit'],
+          serving_unit_amount: resp['serving_qty'],
+          brand: resp['brand_name'],
+          sugars: resp['nf_sugars']
+        )
+        {choice: choice, food: food}
+      end
+    end if day
+  end
+
+  def categories
+    day.categories if day
   end
 
 end

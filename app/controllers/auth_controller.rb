@@ -9,17 +9,17 @@ class AuthController < ApplicationController
     if @user && @user.authenticate(user_login_params[:password])
       token = encode_token({user_id: @user.id})
       render json: { 
-        user: UserSerializer.new(@user), 
-        jwt: token,
-        categories: @user.days.last.categories,
-        choices: @user.days.last.choices.map do |choice|
-          new_choice = choice
-          new_choice.food = choice.food
-          new_choice
-        end,
-        days: @user.days,
-        goal: @user.days.last.goal,
-        goals: @user.goals
+        user: UserSerializer.new(@user),
+        jwt: token#,
+        # categories: @user.days.last.categories,
+        # choices: @user.days.last.choices.map do |choice|
+        #   new_choice = choice
+        #   new_choice.food = choice.food
+        #   new_choice
+        # end,
+        # days: @user.days,
+        # goal: @user.days.last.goal,
+        # goals: @user.goals
         }, status: :accepted
     else
       # puts @user.errors.full_messages
