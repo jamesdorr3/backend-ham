@@ -64,8 +64,4 @@ class User < ApplicationRecord
     end if day
   end
 
-  def categories
-    day.categories.uniq if day
-  end
-
 end

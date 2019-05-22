@@ -21,6 +21,7 @@ class SearchController < ApplicationController
   end
 
   def make_choice
+    category_id = params['categoryId']
     search_name = params['name']
     search_id = params['id']
     id =  Rails.application.credentials.nix[:id]
@@ -58,7 +59,7 @@ class SearchController < ApplicationController
       sugars: resp['nf_sugars']
     )
     choice = Choice.create(
-      category: Category.last, 
+      category_id: category_id, 
       day: Day.last,
       nix_name: food.name, 
       nix_id: resp["nix_item_id"], 
