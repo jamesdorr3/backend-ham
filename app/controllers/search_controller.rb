@@ -60,7 +60,7 @@ class SearchController < ApplicationController
     )
     choice = Choice.create(
       category_id: category_id, 
-      day: Day.last,
+      day: current_user.days.last, ############################# PROBLEMS
       nix_name: food.name, 
       nix_id: resp["nix_item_id"], 
       amount: food.serving_unit_amount, 
