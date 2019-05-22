@@ -5,9 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-
-Choice.destroy_all
 Food.destroy_all
+Choice.destroy_all
 Category.destroy_all
 Day.destroy_all
 Goal.destroy_all

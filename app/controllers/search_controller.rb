@@ -16,6 +16,9 @@ class SearchController < ApplicationController
     url = "https://trackapi.nutritionix.com/v2"
 
     resp = RestClient.get("#{url}/search/instant?query=#{search_phrase}", headers= headers)
+    # puts '#####################'
+    # puts resp
+    # puts '#####################'
     render json: resp
 
   end
