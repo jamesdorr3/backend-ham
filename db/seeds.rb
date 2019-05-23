@@ -15,9 +15,9 @@ User.destroy_all
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
 goal = Goal.create(user: james, calories: 2800, fat: 144, carbs: 144, protein: 240, name: 'rest day')
 today = Day.create(goal: goal)
-breakfast = Category.create(user: james, name: 'breakfast')
-lunch = Category.create(user: james, name: 'lunch')
-dinner = Category.create(user: james, name: 'dinner')
+breakfast = Category.create(user: james, name: 'Breakfast')
+lunch = Category.create(user: james, name: 'Lunch')
+dinner = Category.create(user: james, name: 'Dinner')
 cookies = Food.create(
   user: james,
   name: 'Sausalito Milk Chocolate Macadamia cookies', 
