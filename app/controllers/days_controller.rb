@@ -11,4 +11,15 @@ class DaysController < ApplicationController
     render json: day
   end
 
+  def update
+    day = Day.find(params[:id])
+    day.update(day_params)
+  end
+
+  private
+  
+  def day_params
+    params.require(:day).permit(:goal_id)
+  end
+
 end

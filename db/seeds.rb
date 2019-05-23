@@ -5,8 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-Food.destroy_all
 Choice.destroy_all
+Food.destroy_all
 Category.destroy_all
 Day.destroy_all
 Goal.destroy_all
@@ -14,6 +14,7 @@ User.destroy_all
 
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
 goal = Goal.create(user: james, calories: 2800, fat: 144, carbs: 144, protein: 240, name: 'rest day')
+Goal.create(user: james, calories: 2900, fat: 130, carbs: 240, protein: 190, name: 'workout day')
 today = Day.create(goal: goal)
 breakfast = Category.create(user: james, name: 'Breakfast')
 lunch = Category.create(user: james, name: 'Lunch')
