@@ -61,9 +61,10 @@ class SearchController < ApplicationController
       brand: resp['brand_name'],
       sugars: resp['nf_sugars']
     )
+    day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
       category_id: category_id, 
-      day: current_user.days.last, ############################# PROBLEMS
+      day: day, ############################# PROBLEMS
       nix_name: food.name, 
       nix_id: resp["nix_item_id"], 
       amount: food.serving_unit_amount, 
