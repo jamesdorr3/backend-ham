@@ -19,7 +19,7 @@ class DaysController < ApplicationController
   private
   
   def day_params
-    params.require(:day).permit(:goal_id)
+    params.require(:day).permit(:goal_id, :name)
   end
 
 end

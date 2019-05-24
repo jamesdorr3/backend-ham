@@ -14,13 +14,13 @@ User.destroy_all
 
 admin = User.create(username:'admin', email:'admin@ham.com', password: 'admin')
 admin_goal = Goal.create(user: admin, calories: 2900, fat: 130, carbs: 240, protein: 190, name: 'workout day')
-Day.create(goal: admin_goal)
+Day.create(goal: admin_goal, name: "for users who aren't signed in")
 
 
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
 goal = Goal.create(user: james, calories: 2800, fat: 144, carbs: 144, protein: 240, name: 'rest day')
 Goal.create(user: james, calories: 2900, fat: 130, carbs: 240, protein: 190, name: 'workout day')
-today = Day.create(goal: goal)
+today = Day.create(goal: goal, name: 'demo day')
 breakfast = Category.create(user: james, name: 'Breakfast')
 lunch = Category.create(user: james, name: 'Lunch')
 dinner = Category.create(user: james, name: 'Dinner')
