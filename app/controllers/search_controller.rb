@@ -19,6 +19,9 @@ class SearchController < ApplicationController
     # puts '#####################'
     # puts resp
     # puts '#####################'
+    foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase.downcase)}
+    resp = JSON.parse(resp)
+    resp[:internal] = foods
     render json: resp
 
   end

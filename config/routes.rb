@@ -10,5 +10,6 @@ Rails.application.routes.draw do
   # get '/search/get_nix_food', to: 'search#get_nix_food'
   get '/search/many', to: 'search#many'
   post '/reauth', to: 'auth#reauth'
+  patch '/saveall', to: 'save_all#update'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

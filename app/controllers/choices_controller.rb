@@ -1,6 +1,20 @@
 class ChoicesController < ApplicationController
   skip_before_action :authorized, only: [:update, :destroy]
 
+  def create
+    # byebug
+    food = Food.find(params[:foodId])
+    day = (current_user ? current_user.days.last : Day.all.first)
+    choice = Choice.create(
+      category_id: params[:categoryId], 
+      day: day, ############################# PROBLEMS
+      food: food,
+      amount: food.serving_unit_amount, 
+      measure: food.serving_unit_name, 
+      index: Time::new.to_i)
+    render json: {choice: choice, food: food}
+  end
+  
   def index
     choices = current_user.days.last.choices
     choices.map do |choice|
