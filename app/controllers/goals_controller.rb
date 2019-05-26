@@ -6,6 +6,11 @@ class GoalsController < ApplicationController
     render json: goal
   end
 
+  def create
+    goal = Goal.create(goals_params)
+    render json: goal
+  end
+
   private
 
   def goals_params
