@@ -16,6 +16,14 @@ class DaysController < ApplicationController
     day.update(day_params)
   end
 
+  def destroy
+    day = Day.find(params[:id])
+    day.choices.each do |choice|
+      choice.destroy
+    end
+    day.destroy
+  end
+  
   private
   
   def day_params
