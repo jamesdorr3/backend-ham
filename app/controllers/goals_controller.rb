@@ -11,6 +11,14 @@ class GoalsController < ApplicationController
     render json: goal
   end
 
+  def destroy
+    goal = Goal.find(params[:id])
+    # byebug
+    if goal.days.length == 0
+      goal.destroy
+    end
+  end
+
   private
 
   def goals_params
