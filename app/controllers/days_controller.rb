@@ -18,9 +18,7 @@ class DaysController < ApplicationController
 
   def destroy
     day = Day.find(params[:id])
-    day.choices.each do |choice|
-      choice.destroy
-    end
+    day.choices.destroy_all
     day.destroy
   end
   
