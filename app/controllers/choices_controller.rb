@@ -53,7 +53,7 @@ class ChoicesController < ApplicationController
         brand: resp['brand_name'],
         sugars: resp['nf_sugars']
       )
-      puts "------------------#{food}-----------------"
+      # puts "------------------#{food}-----------------"
       {choice: choice, food: food}
     end
     # byebug

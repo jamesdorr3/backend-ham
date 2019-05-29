@@ -6,12 +6,12 @@ class UsersController < ApplicationController
   end
 
   def update
-    puts 'USER RRRRR______________________'
-    puts @user
+    # puts 'USER RRRRR______________________'
+    # puts @user
     user = User.find(params[:id])
     user.update(update_user_params)
     user.save
-    puts user.errors.full_messages
+    # puts user.errors.full_messages
     render :json => user
   end
 
