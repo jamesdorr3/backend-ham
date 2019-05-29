@@ -27,8 +27,9 @@ class SearchController < ApplicationController
   # end
 
   def many
+    key = Rails.application.credentials[:usda][:key]
     search_phrase = params['q']
-    resp = RestClient.post("https://pjELNJPoQLHwXy7vLJcvpVvMAFQbTurLVlqDglgM@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}"}.to_json, headers= {'Content-Type':'application/json'})
+    resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}"}.to_json, headers= {'Content-Type':'application/json'})
     foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
     # byebug
     resp = JSON.parse(resp)
@@ -40,8 +41,8 @@ class SearchController < ApplicationController
     # byebug
     category_id = params['categoryId']
     search_id = params['id']
-
-    resp = RestClient.get("https://pjELNJPoQLHwXy7vLJcvpVvMAFQbTurLVlqDglgM@api.nal.usda.gov/fdc/v1/#{search_id}", headers= {'Content-Type':'application/json'})
+    key = Rails.application.credentials[:usda][:key]
+    resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{search_id}", headers= {'Content-Type':'application/json'})
     resp = JSON.parse(resp)
     # byebug
     if resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
