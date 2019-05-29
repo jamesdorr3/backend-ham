@@ -1,5 +1,5 @@
 class ChoicesController < ApplicationController
-  skip_before_action :authorized, only: [:update, :destroy]
+  skip_before_action :authorized, only: [:update, :destroy, :create]
 
   def create
     # byebug
@@ -12,6 +12,16 @@ class ChoicesController < ApplicationController
       amount: food.serving_unit_amount, 
       measure: food.serving_unit_name, 
       index: Time::new.to_i)
+      # day = (current_user ? current_user.days.last : Day.all.first)
+      # choice = Choice.create(
+      #   food: food,
+      #   category_id: category_id, 
+      #   day: day, ############################# PROBLEMS
+      #   nix_name: food.name, 
+      #   nix_id: resp['fdcId'], 
+      #   amount: food.serving_unit_amount, 
+      #   measure: food.serving_unit_name, 
+      #   index: Time::new.to_i)
     render json: {choice: choice, food: food}
   end
   

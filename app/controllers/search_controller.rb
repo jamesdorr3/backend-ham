@@ -26,15 +26,20 @@ class SearchController < ApplicationController
 
   # end
 
+  def internal_search
+    search_phrase = params['q']
+    foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.downcase.include?(x.name.downcase)}
+    render json: {internal: foods}
+  end
+
   def many
     key = Rails.application.credentials[:usda][:key]
     search_phrase = params['q']
     resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}"}.to_json, headers= {'Content-Type':'application/json'})
-    foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
+    # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
     # byebug
     resp = JSON.parse(resp)
-    to_render = {common: resp["foods"], internal: foods}
-    render json: to_render
+    render json: {common: resp["foods"]}
   end
 
   def make_choice

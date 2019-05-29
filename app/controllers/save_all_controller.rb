@@ -1,10 +1,10 @@
 class SaveAllController < ApplicationController
 
   def update
-    params[:categories].each do |category| 
-      cat = Category.find(category[:id])
-      cat.update(category.permit(:name, :user_id, :index, :updated_at))
-    end
+    # params[:categories].each do |category| 
+    #   cat = Category.find(category[:id])
+    #   cat.update(category.permit(:name, :user_id, :index, :updated_at))
+    # end
     params[:choiceFoods].each do |choiceFood| 
       choice = Choice.find(choiceFood[:choice][:id])
       choice.update(choiceFood.require(:choice).permit(:food_id, :nix_id, :nix_name, :day_id, :amount, :measure, :category_id, :index))
