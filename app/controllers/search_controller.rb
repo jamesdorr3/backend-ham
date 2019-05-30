@@ -52,6 +52,7 @@ class SearchController < ApplicationController
     # byebug
     if resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
       unit_name = "#{resp['foodPortions'][0]['portionDescription']}"
+      unit_name = 'unit' if unit_name == 'Quantity not specified'
     elsif resp["householdServingFullText"]
       unit_name = resp["householdServingFullText"]
     else
