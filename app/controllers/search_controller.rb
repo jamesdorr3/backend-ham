@@ -70,6 +70,8 @@ class SearchController < ApplicationController
     end
     if resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Carbohydrate, by difference'}
       carbs = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Carbohydrate, by difference'}['amount'] * serving_grams * 0.01
+    elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Sugars, total including NLEA'}
+      carbs = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Sugars, total including NLEA'}['amount'] * serving_grams * 0.01
     else
       byebug
     end
