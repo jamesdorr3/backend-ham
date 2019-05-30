@@ -16,7 +16,6 @@ class UsersController < ApplicationController
   end
 
   def create ## problems
-    # byebug
     @user = User.create(user_params)
     if @user.valid?
       Category.create(user: @user, name: 'Breakfast')

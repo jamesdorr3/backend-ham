@@ -1,8 +1,8 @@
 require 'rest-client'
 class User < ApplicationRecord
   has_secure_password
-  # validates :email, uniqueness: {case_sensitive: false}
-  # validates :username, uniqueness: {case_sensitive: false}
+  validates :email, uniqueness: {case_sensitive: false}
+  validates :username, uniqueness: {case_sensitive: false}
 
   has_many :goals
   has_many :days, through: :goals
