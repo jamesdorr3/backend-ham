@@ -45,7 +45,7 @@ class SearchController < ApplicationController
   def make_choice
     # byebug
     category_id = params['categoryId']
-    search_id = params['id']
+    search_id = params['fdcId']
     key = Rails.application.credentials[:usda][:key]
     resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{search_id}", headers= {'Content-Type':'application/json'})
     resp = JSON.parse(resp)
@@ -108,7 +108,7 @@ class SearchController < ApplicationController
     choice = Choice.create(
       food: food,
       category_id: category_id, 
-      day: day, ############################# PROBLEMS
+      day_id: params['dayId'], ############################# PROBLEMS
       nix_name: food.name, 
       nix_id: resp['fdcId'], 
       amount: food.serving_unit_amount, 

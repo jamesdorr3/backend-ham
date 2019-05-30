@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :foods
   resources :users
   resources :auth
-  get '/search/make_choice', to: 'search#make_choice'
+  post '/search/make_choice', to: 'search#make_choice'
   # get '/search/get_nix_food', to: 'search#get_nix_food'
   get '/search/many', to: 'search#many'
   post '/reauth', to: 'auth#reauth'

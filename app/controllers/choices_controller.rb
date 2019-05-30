@@ -7,7 +7,7 @@ class ChoicesController < ApplicationController
     day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
       category_id: params[:categoryId], 
-      day: day, ############################# PROBLEMS
+      day_id: params[:dayId], ############################# PROBLEMS
       food: food,
       amount: food.serving_unit_amount, 
       measure: food.serving_unit_name, 
