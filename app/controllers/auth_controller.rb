@@ -6,6 +6,7 @@ class AuthController < ApplicationController
     if !@user
       @user = User.find_by(email: user_login_params[:username_or_email])
     end
+    # byebug
     if @user && @user.authenticate(user_login_params[:password])
       token = encode_token({user_id: @user.id})
       render json: { 

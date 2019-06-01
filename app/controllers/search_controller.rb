@@ -118,7 +118,7 @@ class SearchController < ApplicationController
     # puts choice.errors.full_messages
     # to_render = {choice: choice, food: food}
     # byebug 
-    render json: {choice: choice, food: food}
+    render json: {choice: choice, food: food, resp: resp}
   end
 
   # def make_choice
