@@ -22,7 +22,7 @@ class GoalsController < ApplicationController
   private
 
   def goals_params
-    params.require(:goal).permit(:id, :user_id, :calories, :fat, :carbs, :protein, :name)
+    params.require(:goal).permit(:user_id, :calories, :fat, :carbs, :protein, :name)
   end
 
 end
