@@ -27,8 +27,8 @@ class SearchController < ApplicationController
   # end
 
   def internal_search
-    search_phrase = params['q']
-    foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.downcase.include?(x.name.downcase)}
+    search_phrase = params['q'].downcase
+    foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.include?(x.name.downcase)}
     render json: {internal: foods}
   end
 
