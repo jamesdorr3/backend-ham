@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_07_072122) do
+ActiveRecord::Schema.define(version: 2019_06_08_181939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,16 @@ ActiveRecord::Schema.define(version: 2019_06_07_072122) do
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
+  create_table "measures", force: :cascade do |t|
+    t.bigint "food_id"
+    t.float "amount"
+    t.float "grams"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["food_id"], name: "index_measures_on_food_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "password_digest"
@@ -100,4 +110,5 @@ ActiveRecord::Schema.define(version: 2019_06_07_072122) do
   add_foreign_key "days", "goals"
   add_foreign_key "foods", "users"
   add_foreign_key "goals", "users"
+  add_foreign_key "measures", "foods"
 end
