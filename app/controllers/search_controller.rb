@@ -50,17 +50,22 @@ class SearchController < ApplicationController
     resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{search_id}", headers= {'Content-Type':'application/json'})
     resp = JSON.parse(resp)
     # byebug
+    if resp['foodClass'] == 'Branded'
+      unit_name = resp["householdServingFullText"]
+      serving_grams = resp['servingSize']
+      resp['labelNutrients'].each{|nutrient| eval("#{nutrient[0]} = #{nutrient[1]['value']}")}
+    else
+      # unit_name = 
+    end
     if resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
       unit_name = "#{resp['foodPortions'][0]['portionDescription']}"
       unit_name = 'unit' if unit_name == 'Quantity not specified'
-    elsif resp["householdServingFullText"]
-      unit_name = resp["householdServingFullText"]
+
     else
       unit_name = 'unit'
       serving_grams = 99999
     end
-    if resp['servingSize'] ############# SERVING GRAMS
-      serving_grams = resp['servingSize']
+
     elsif resp['foodPortions'][0] 
       serving_grams = resp['foodPortions'][0]['gramWeight']
     end
@@ -93,17 +98,20 @@ class SearchController < ApplicationController
       serving_grams: serving_grams,
       calories: calories,
       fat: fat,
-      # saturated_fat: resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Fatty acids, total saturated'}['amount'] * serving_grams * 0.01,
+      # saturated_fat: saturatedFat,
       carbs: carbs,
       protein: protein,
-      # cholesterol: resp['nf_cholesterol'],
-      # dietary_fiber: resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Fiber, total dietary'}['amount'] * serving_grams * 0.01,
-      # potassium: resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Potassium, K'}['amount'],
-      # sodium: resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Sodium, Na'}['amount'] * serving_grams * 0.01,
+      # cholesterol: cholesterol,
+      # dietary_fiber: fiber,
+      # potassium: potassium,
+      # sodium: sodium,
       serving_unit_name: unit_name,
       serving_unit_amount: 1,
-      brand: resp['brandOwner']
-      # sugars: resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Sugars, total including NLEA'}['amount'] * serving_grams * 0.01
+      brand: resp['brandOwner'],
+      # sugars: sugars,
+      # calcium: calcium,
+      # iron: iron,
+      # trans_fat: transFat
       )
     day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
