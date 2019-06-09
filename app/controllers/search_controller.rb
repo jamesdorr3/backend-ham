@@ -113,6 +113,11 @@ class SearchController < ApplicationController
         else
           name = 'ATTENTION'
         end
+        if portion['amount']
+          amount = portion['amount']
+        else
+          amount = 1
+        end
         measure = Measure.find_or_create_by(
           food: food,
           amount: portion['amount'],
