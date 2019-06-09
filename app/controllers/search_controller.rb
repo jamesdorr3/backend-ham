@@ -129,6 +129,11 @@ class SearchController < ApplicationController
       name: 'grams'
     ))
     day = (current_user ? current_user.days.last : Day.all.first)
+    if measures.first.amount
+      amount = measures.first.amount
+    else
+      amount = 1
+    end
     choice = Choice.create(
       food: food,
       category_id: category_id, 

@@ -8,11 +8,18 @@ class FoodsController < ApplicationController
 
   def create
     food = Food.find_or_create_by(food_params)
+    measure = Measure.create(
+      food: food,
+      amount: food.serving_unit_amount,
+      grams: food.serving_grams,
+      name: food.serving_unit_name
+    )
+    food.create_grams_measure
     choice = Choice.create(food: food, category_id: params[:categoryId], day: current_user.days.last,
     amount: food.serving_unit_amount, 
-    measure: food.serving_unit_name, 
+    measure_id: measure.id, 
     index: Time::new.to_i)
-    render json: {choice: choice, food: food}
+    render json: {choice: choice, food: food, measures: food.measures}
   end
 
   private

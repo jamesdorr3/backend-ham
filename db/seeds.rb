@@ -21,7 +21,7 @@ Day.create(goal: admin_goal, name: "for users who aren't signed in")
 james = User.create(username:'j', email:'jamesdorr3@gmail.com', password: '1')
 goal = Goal.create(user: james, calories: 2800, fat: 144, carbs: 144, protein: 240, name: 'rest day')
 Goal.create(user: james, calories: 2900, fat: 130, carbs: 240, protein: 190, name: 'workout day')
-today = Day.create(goal: goal, name: 'demo day')
+today = Day.create(goal: goal, name: 'demo day', date: Date.today)
 breakfast = Category.create(user: james, name: 'Breakfast')
 lunch = Category.create(user: james, name: 'Lunch')
 dinner = Category.create(user: james, name: 'Dinner')
@@ -46,7 +46,7 @@ cookies = Food.create(
   upc: '014100077121'
 )
 Measure.create(food: cookies, amount: cookies.serving_unit_amount, grams: cookies.serving_grams, name: cookies.serving_unit_name)
-Measure.create(food: cookies, amount: cookies.serving_grams, grams: cookies.serving_grams, name: 'grams')
+cookies.create_grams_measure
 sour = Food.create(
   user: james,
   name: 'Sour Punch Twists', 
@@ -68,7 +68,7 @@ sour = Food.create(
   upc: '041364082769'
 )
 Measure.create(food: sour, amount: sour.serving_unit_amount, grams: sour.serving_grams, name: sour.serving_unit_name)
-Measure.create(food: sour, amount: sour.serving_grams, grams: sour.serving_grams, name: 'grams')
+sour.create_grams_measure
 fruit_snacks = Food.create(
   user: james,
   name: 'Fruit Snacks, Mixed Fruit', 
@@ -90,7 +90,7 @@ fruit_snacks = Food.create(
   upc: '034856001751'
 )
 Measure.create(food: fruit_snacks, amount: fruit_snacks.serving_unit_amount, grams: fruit_snacks.serving_grams, name: fruit_snacks.serving_unit_name)
-Measure.create(food: fruit_snacks, amount: fruit_snacks.serving_grams, grams: fruit_snacks.serving_grams, name: 'grams')
+fruit_snacks.create_grams_measure
 Choice.create(
   food: cookies,
   day: today,
