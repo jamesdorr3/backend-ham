@@ -7,7 +7,7 @@ class SaveAllController < ApplicationController
     # end
     params[:choiceFoods].each do |choiceFood| 
       choice = Choice.find(choiceFood[:choice][:id])
-      choice.update(choiceFood.require(:choice).permit(:food_id, :nix_id, :nix_name, :day_id, :amount, :measure, :category_id, :index))
+      choice.update(choiceFood.require(:choice).permit(:food_id, :measure_id, :day_id, :amount, :category_id, :index))
     end
     params[:days].each do |day| 
       d = Day.find(day[:id])

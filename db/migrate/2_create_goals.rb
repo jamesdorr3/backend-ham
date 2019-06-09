@@ -7,6 +7,7 @@ class CreateGoals < ActiveRecord::Migration[5.2]
       t.float :carbs
       t.float :protein
       t.string :name
+      t.boolean :deleted
 
       t.timestamps
     end

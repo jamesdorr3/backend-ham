@@ -4,6 +4,7 @@ class CreateCategories < ActiveRecord::Migration[5.2]
       t.string :name
       t.belongs_to :user, foreign_key: true
       t.bigint :index
+      t.boolean :repeat
 
       t.timestamps
     end

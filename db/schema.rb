@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2019_06_08_181939) do
     t.string "name"
     t.bigint "user_id"
     t.bigint "index"
+    t.boolean "repeat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
@@ -26,13 +27,11 @@ ActiveRecord::Schema.define(version: 2019_06_08_181939) do
 
   create_table "choices", force: :cascade do |t|
     t.bigint "food_id"
-    t.string "nix_id"
-    t.string "nix_name"
     t.bigint "day_id"
     t.float "amount"
-    t.string "measure"
     t.bigint "category_id"
     t.integer "index"
+    t.bigint "measure_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_choices_on_category_id"
@@ -43,9 +42,9 @@ ActiveRecord::Schema.define(version: 2019_06_08_181939) do
   create_table "days", force: :cascade do |t|
     t.string "name"
     t.bigint "goal_id"
+    t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date"
     t.index ["goal_id"], name: "index_days_on_goal_id"
   end
 
@@ -80,6 +79,7 @@ ActiveRecord::Schema.define(version: 2019_06_08_181939) do
     t.float "carbs"
     t.float "protein"
     t.string "name"
+    t.boolean "deleted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_goals_on_user_id"
