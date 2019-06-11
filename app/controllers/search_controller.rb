@@ -7,6 +7,8 @@ class SearchController < ApplicationController
   def internal_search
     search_phrase = params['q'].downcase
     foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.include?(x.name.downcase)}
+    foods = foods.select{|x| x.choices.count > 0}
+    foods = foods.sort { |a, b| b.choices.count <=> a.choices.count }
     render json: {internal: foods}
   end
 
