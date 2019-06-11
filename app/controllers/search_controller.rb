@@ -13,11 +13,11 @@ class SearchController < ApplicationController
   def many
     key = Rails.application.credentials[:usda][:key]
     search_phrase = params['q']
-    resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}"}.to_json, headers= {'Content-Type':'application/json'})
+    resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}","requireAllWords":"true"}.to_json, headers= {'Content-Type':'application/json'})
     # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
     # byebug
     resp = JSON.parse(resp)
-    render json: {common: resp["foods"]}
+    render json: {common: resp["foods"], resp: resp}
   end
 
   def make_choice
@@ -41,6 +41,7 @@ class SearchController < ApplicationController
     elsif resp['foodPortions'][0]
       serving_grams = resp['foodPortions'][0]['gramWeight']
     end
+    serving_grams = 1 if serving_grams < 1
 
     if resp['labelNutrients'] && resp['labelNutrients']['fat']
       fat = resp['labelNutrients']['fat']['value']
@@ -118,9 +119,10 @@ class SearchController < ApplicationController
         else
           amount = 1
         end
+        amount = 1 if !(amount > 0)
         measure = Measure.find_or_create_by(
           food: food,
-          amount: portion['amount'],
+          amount: amount,
           grams: portion['gramWeight'],
           name: name
         )
