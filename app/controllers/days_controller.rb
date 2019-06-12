@@ -21,6 +21,17 @@ class DaysController < ApplicationController
     day.choices.destroy_all
     day.destroy
   end
+
+  def copy
+    day = Day.find(params[:id])
+    newDay = Day.create(goal: day.goal, date: Date.today)
+    day.choices.each do |choice|
+      newChoice = choice.dup
+      newChoice.day = newDay
+      newChoice.save
+    end
+    render json: newDay
+  end
   
   private
   
