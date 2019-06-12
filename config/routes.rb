@@ -12,5 +12,6 @@ Rails.application.routes.draw do
   post '/reauth', to: 'auth#reauth'
   patch '/saveall', to: 'save_all#update'
   get 'search/internal_search', to: 'search#internal_search'
+  get 'search/favorite_search', to: 'search#favorite_search'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

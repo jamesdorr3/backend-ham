@@ -9,7 +9,6 @@ class User < ApplicationRecord
   has_many :choices, through: :days
   has_many :foods, through: :choices
   has_many :categories
-  has_many :foods
 
   def day
     self.days.last
