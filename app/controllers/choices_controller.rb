@@ -4,7 +4,11 @@ class ChoicesController < ApplicationController
   def create
     # byebug
     food = Food.find(params[:foodId])
-    food.choice_count += 1
+    if food.choice_count
+      food.choice_count += 1
+    else
+      food.choice_count = food.choices.count + 1
+    end
     food.save
     day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
