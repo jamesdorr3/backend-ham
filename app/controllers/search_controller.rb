@@ -120,7 +120,11 @@ class SearchController < ApplicationController
       # iron: iron,
       # trans_fat: transFat,
     )
-    food.choice_count += 1
+    if food.choice_count
+      food.choice_count += 1
+    else
+      food.choice_count = food.choices.count + 1
+    end
     food.save
     if resp['foodClass'] == 'Branded' # success
       measures = [Measure.find_or_create_by(
