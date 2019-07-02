@@ -20,7 +20,12 @@ class User < ApplicationRecord
 
   def choice_foods
     day.choices.map do |choice| # problem for sign up
-        {choice: choice, food: choice.food, measures: choice.food.measures}
+      if choice.food && choice.food.measures
+        measures = choice.food.measures
+      else
+        measures = nil
+      end
+      {choice: choice, food: choice.food, measures: choice.food.measures}
     end if day
   end
 
