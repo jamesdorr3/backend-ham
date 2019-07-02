@@ -2,7 +2,9 @@ class DaysController < ApplicationController
 
   def create
     # byebug
-    day = Day.create(goal: current_user.goals.last, date: Date.today)
+    date = params['date'][0,10].split('/')
+    date = date[1] + '/' + date[0] + '/' + date[2]
+    day = Day.create(goal: current_user.goals.last, date: date.to_date)
     render json: day
   end
 
