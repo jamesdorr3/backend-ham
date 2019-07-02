@@ -25,7 +25,7 @@ class User < ApplicationRecord
       else
         measures = nil
       end
-      {choice: choice, food: choice.food, measures: choice.food.measures}
+      {choice: choice, food: choice.food, measures: measures}
     end if day
   end
 
