@@ -4,12 +4,14 @@ class ChoicesController < ApplicationController
   def create
     # byebug
     food = Food.find(params[:foodId])
+    food.choice_count += 1
+    food.save
     day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
       category_id: params[:categoryId], 
       day_id: params[:dayId], ############################# PROBLEMS
       food: food,
-      amount: food.serving_unit_amount, 
+      amount: food.measures.first.amount, 
       measure_id: food.measures.first.id, 
       index: Time::new.to_i)
       # day = (current_user ? current_user.days.last : Day.all.first)
@@ -43,6 +45,8 @@ class ChoicesController < ApplicationController
 
   def destroy
     choice = Choice.find(params[:id])
+    choice.food.choice_count -= 1
+    choice.food.save
     choice.destroy
   end
 

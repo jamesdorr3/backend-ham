@@ -8,8 +8,14 @@ class SearchController < ApplicationController
     search_phrase = params['q'].downcase
     if current_user && current_user.foods
       foods = current_user.foods.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.include?(x.name.downcase)}
-      foods = foods.select{|x| x.choices.count > 0}
-      foods = foods.sort { |a, b| b.choices.count <=> a.choices.count }
+      # foods = foods.select{|x| x.choices.count > 0}
+      foods.each do |food|
+        if !food.choice_count
+          food.choice_count = food.choices.count
+          food.save
+        end
+      end
+      foods = foods.sort { |a, b| b.choice_count <=> a.choice_count }
       render json: foods.uniq[0,10]
     else
       foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase) || search_phrase.include?(x.name.downcase)}
@@ -51,13 +57,14 @@ class SearchController < ApplicationController
     else
       unit_name = 'unit'
     end
-
+    
+    # byebug
     if resp['servingSize']
       serving_grams = resp['servingSize']
     elsif resp['foodPortions'][0]
       serving_grams = resp['foodPortions'][0]['gramWeight']
     end
-    serving_grams = 1 if serving_grams < 1
+    serving_grams = 1 if !serving_grams || serving_grams < 1
 
     if resp['labelNutrients'] && resp['labelNutrients']['fat']
       fat = resp['labelNutrients']['fat']['value']
@@ -111,8 +118,10 @@ class SearchController < ApplicationController
       # sugars: sugars,
       # calcium: calcium,
       # iron: iron,
-      # trans_fat: transFat
+      # trans_fat: transFat,
     )
+    food.choice_count += 1
+    food.save
     if resp['foodClass'] == 'Branded' # success
       measures = [Measure.find_or_create_by(
         food: food,
@@ -164,7 +173,7 @@ class SearchController < ApplicationController
       amount: measures.first.amount, 
       measure_id: measures.first.id, 
       index: Time::new.to_i)
-    # puts choice.errors.full_messages
+    puts choice.errors.full_messages
     # to_render = {choice: choice, food: food}
     render json: {choice: choice, food: food, resp: resp, measures: measures}
   end
