@@ -9,8 +9,8 @@ class FoodsController < ApplicationController
       foods.find_all do |x| 
         x.name.downcase.include?(search_phrase) || 
         search_phrase.include?(x.name.downcase) || 
-        (x.brand.downcase.include?(search_phrase) if x.brand) || 
-        (search_phrase.include?(x.brand.downcase) if x.brand)
+        (x.brand.downcase.include?(search_phrase) if (x.brand && x.brand.length > 0)) || 
+        (search_phrase.include?(x.brand.downcase) if (x.brand && x.brand.length > 0))
       end
     end
 
