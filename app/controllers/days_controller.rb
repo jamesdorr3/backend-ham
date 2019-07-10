@@ -26,7 +26,7 @@ class DaysController < ApplicationController
 
   def copy
     day = Day.find(params[:id])
-    newDay = Day.create(goal: day.goal, date: Date.today)
+    newDay = Day.create(goal: day.goal, date: Date.today, name: day.name)
     day.choices.each do |choice|
       newChoice = choice.dup
       newChoice.day = newDay
