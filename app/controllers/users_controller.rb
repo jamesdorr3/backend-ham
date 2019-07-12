@@ -22,7 +22,7 @@ class UsersController < ApplicationController
       Category.create(user: @user, name: 'Lunch')
       Category.create(user: @user, name: 'Dinner')
       goal = Goal.create(user: @user, name: 'Macro Goals')
-      Day.create(goal: goal)
+      Day.create(goal: goal, date: Date.today)
       @token = encode_token({ user_id: @user.id })
       render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
     else
