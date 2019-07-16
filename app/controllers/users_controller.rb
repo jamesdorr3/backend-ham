@@ -20,8 +20,9 @@ class UsersController < ApplicationController
     if @user.valid?
       Category.create(user: @user, name: 'Breakfast')
       Category.create(user: @user, name: 'Lunch')
+      Category.create(user: @user, name: 'Snacks')
       Category.create(user: @user, name: 'Dinner')
-      goal = Goal.create(user: @user, name: 'Macro Goals')
+      goal = Goal.create(user: @user, name: 'Macro Goals', calories: 0, fat: 0, carbs: 0, protein: 0)
       Day.create(goal: goal, date: Date.today)
       @token = encode_token({ user_id: @user.id })
       render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
