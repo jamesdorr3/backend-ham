@@ -1,3 +1,5 @@
+require "lemmatizer"
+
 class FoodsController < ApplicationController
 
   skip_before_action :authorized, only: [:create,:index]
@@ -7,10 +9,13 @@ class FoodsController < ApplicationController
 
     def search(foods, search_phrase)
       search_phrase_arr = search_phrase.downcase.scan(/\w+/)
+      lem = Lemmatizer.new
+      search_phrase_arr.map!{|word| lem.lemma(word)}
       foods.find_all do |x|
         count = 0
         results = x.name.downcase.scan(/\w+/)
         results = results + x.brand.downcase.scan(/\w+/) if x.brand
+        results.map!{|word| lem.lemma(word)}
         search_phrase_arr.each do |word|
           count += 1 if results.include?(word) 
         end
