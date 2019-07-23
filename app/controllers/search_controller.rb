@@ -35,11 +35,12 @@ class SearchController < ApplicationController
   def many
     key = Rails.application.credentials[:usda][:key]
     search_phrase = params['q']
-    resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}","requireAllWords":"true"}.to_json, headers= {'Content-Type':'application/json'})
+    page_number = params['pageNumber']
+    resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}","requireAllWords":"true","pageNumber":"#{page_number}"}.to_json, headers= {'Content-Type':'application/json'})
     # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
-    # byebug
     resp = JSON.parse(resp)
-    render json: {common: resp["foods"], resp: resp}
+    # byebug
+    render json: {common: resp["foods"], resp: resp, current_page: resp['currentPage'], total_pages: resp['totalPages']}
   end
 
   def make_choice
