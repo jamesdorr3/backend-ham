@@ -8,6 +8,7 @@ class FoodsController < ApplicationController
     search_phrase = params['q'].downcase
 
     def search(foods, search_phrase)
+      return foods if search_phrase == ''
       search_phrase_arr = search_phrase.downcase.scan(/\w+/)
       lem = Lemmatizer.new
       search_phrase_arr.map!{|word| lem.lemma(word)}
