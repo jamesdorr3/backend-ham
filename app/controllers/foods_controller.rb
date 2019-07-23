@@ -6,11 +6,22 @@ class FoodsController < ApplicationController
     search_phrase = params['q'].downcase
 
     def search(foods, search_phrase)
-      foods.find_all do |x| 
-        x.name.downcase.include?(search_phrase) || 
-        search_phrase.include?(x.name.downcase) || 
-        (x.brand.downcase.include?(search_phrase) if (x.brand && x.brand.length > 0)) || 
-        (search_phrase.include?(x.brand.downcase) if (x.brand && x.brand.length > 0))
+      search_phrase_arr = search_phrase.downcase.scan(/\w+/)
+      foods.find_all do |x|
+        count = 0
+        results = x.name.downcase.scan(/\w+/)
+        results = results + x.brand.downcase.scan(/\w+/) if x.brand
+        search_phrase_arr.each do |word|
+          count += 1 if results.include?(word) 
+        end
+        results.each do |word|
+          count += 1 if search_phrase_arr.include?(word)
+        end
+        count > 0
+        # x.name.downcase.include?(search_phrase) || 
+        # search_phrase.include?(x.name.downcase) || 
+        # (x.brand.downcase.include?(search_phrase) if (x.brand && x.brand.length > 0)) || 
+        # (search_phrase.include?(x.brand.downcase) if (x.brand && x.brand.length > 0))
       end
     end
 
