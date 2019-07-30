@@ -36,10 +36,14 @@ class FoodsController < ApplicationController
         # end
         # count > 0
 
-        food.name.downcase.include?(search_phrase) || 
-        search_phrase.include?(food.name.downcase) || 
-        (food.brand.downcase.include?(search_phrase) if (food.brand && food.brand.length > 0)) || 
-        (search_phrase.include?(food.brand.downcase) if (food.brand && food.brand.length > 0))
+        search_phrase = search_phrase.downcase
+        food_name = food.name.downcase
+        food_brand = food.brand.downcase if food.brand
+
+        food_name.include?(search_phrase) || 
+        search_phrase.include?(food_name) || 
+        (food_brand.include?(search_phrase) if (food.brand && food.brand.length > 0)) || 
+        (search_phrase.include?(food_brand) if (food.brand && food.brand.length > 0))
 
       end
     end

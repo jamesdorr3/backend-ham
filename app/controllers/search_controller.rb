@@ -99,6 +99,8 @@ class SearchController < ApplicationController
       calories = fat * 9 + carbs * 4 + protein * 4
     end
 
+    # Food.find_or_create_resp(resp, current_user)
+
     # byebug
     food = Food.find_or_create_by(
       user: current_user,
