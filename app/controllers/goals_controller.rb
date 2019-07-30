@@ -13,10 +13,11 @@ class GoalsController < ApplicationController
 
   def destroy
     goal = Goal.find(params[:id])
-    # byebug
-    if goal.days.length == 0
-      goal.destroy
+    goal.days.each do |day|
+      day.goal = current_user.goals.filter{|x| x.id != goal.id}[0]
+      day.save
     end
+    goal.destroy
   end
 
   private

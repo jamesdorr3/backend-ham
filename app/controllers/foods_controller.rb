@@ -9,25 +9,38 @@ class FoodsController < ApplicationController
 
     def search(foods, search_phrase)
       return foods if search_phrase == ''
-      search_phrase_arr = search_phrase.downcase.scan(/\w+/)
-      lem = Lemmatizer.new
-      search_phrase_arr.map!{|word| lem.lemma(word)}
-      foods.find_all do |x|
-        count = 0
-        results = x.name.downcase.scan(/\w+/)
-        results = results + x.brand.downcase.scan(/\w+/) if x.brand
-        results.map!{|word| lem.lemma(word)}
-        search_phrase_arr.each do |word|
-          count += 1 if results.include?(word) 
-        end
-        results.each do |word|
-          count += 1 if search_phrase_arr.include?(word)
-        end
-        count > 0
-        # x.name.downcase.include?(search_phrase) || 
-        # search_phrase.include?(x.name.downcase) || 
-        # (x.brand.downcase.include?(search_phrase) if (x.brand && x.brand.length > 0)) || 
-        # (search_phrase.include?(x.brand.downcase) if (x.brand && x.brand.length > 0))
+      # search_phrase_arr = []
+      # lem = Lemmatizer.new
+      # search_phrase.downcase.scan(/\w+/).each do |word|
+      #   search_phrase_arr << word
+      #   lemma = lem.lemma(word)
+      #   search_phrase_arr << lemma if word != lemma
+      # end
+      foods.find_all do |food|
+        # search_phrase_arr.any? do |word|
+        #   name = food.name.downcase
+        #   name = name + ' ' + food.brand.downcase if food.brand
+        #   puts name
+        #   name.include?(word)
+        # end
+
+        # count = 0
+        # results = x.name.downcase.scan(/\w+/)
+        # results = results + x.brand.downcase.scan(/\w+/) if x.brand
+        # results.map!{|word| lem.lemma(word)}
+        # search_phrase_arr.each do |word|
+        #   count += 1 if results.include?(word) 
+        # end
+        # results.each do |word|
+        #   count += 1 if search_phrase_arr.include?(word)
+        # end
+        # count > 0
+
+        food.name.downcase.include?(search_phrase) || 
+        search_phrase.include?(food.name.downcase) || 
+        (food.brand.downcase.include?(search_phrase) if (food.brand && food.brand.length > 0)) || 
+        (search_phrase.include?(food.brand.downcase) if (food.brand && food.brand.length > 0))
+
       end
     end
 
