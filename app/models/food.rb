@@ -111,7 +111,6 @@ class Food < ApplicationRecord
           name: unit_name,
         )]
       else
-        measures = []
         resp['foodPortions'].each do |portion| # success
           if portion['portionDescription']
             name = portion['portionDescription']
@@ -126,7 +125,7 @@ class Food < ApplicationRecord
             amount = 1
           end
           amount = 1 if !(amount > 0)
-          measure = Measure.create(
+          Measure.create(
             food: food,
             amount: amount,
             grams: portion['gramWeight'],
@@ -221,13 +220,11 @@ class Food < ApplicationRecord
     #   trans_fat = nil
     # end
 
-    if resp['gtinUpc']
-      upc = resp['gtinUpc']
-    else
-      upc = nil
-    end
+    upc = resp['gtinUpc']
+    # byebug
 
-    self.update(fdcId: upc,cholesterol: cholesterol, dietary_fiber: fiber, potassium: potassium, saturated_fat: saturated_fat, sodium: sodium, sugars: sugars)
+    self.update(fdcId: resp['fdcId'], upc: upc, cholesterol: cholesterol, dietary_fiber: fiber, potassium: potassium, saturated_fat: saturated_fat, sodium: sodium, sugars: sugars)
+    # self.save
     self.increment_count 
 
     # if resp['foodClass'] == 'Branded' # success

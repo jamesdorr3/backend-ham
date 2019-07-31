@@ -39,14 +39,17 @@ class SearchController < ApplicationController
     resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_phrase}","requireAllWords":"true","pageNumber":"#{page_number}"}.to_json, headers= {'Content-Type':'application/json'})
     # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
     resp = JSON.parse(resp)
-    # byebug
+    # resp['foods'].each do |food|
+    #   Food.find_or_create_and_update(food['fdcId'])
+    # end
     render json: {common: resp["foods"], resp: resp, current_page: resp['currentPage'], total_pages: resp['totalPages']}
   end
 
   def make_choice
 
-    food = Food.find_or_create_and_update(params['fdcId'])
-    measures = food.measures
+    food_and_measures = Food.find_or_create_and_update(params['fdcId'])
+    food = food_and_measures['food']
+    measures = food_and_measures['measures']
 
     day = (current_user ? current_user.days.last : Day.all.first) ############# nil ?
     # byebug
