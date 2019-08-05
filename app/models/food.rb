@@ -30,17 +30,17 @@ class Food < ApplicationRecord
     food.save
   end
 
-  def self.find_or_create_and_update(fdcId)
+  def self.find_or_create_and_update(resp)
 
-    if food = Food.find_by(fdcId: fdcId)
-      food.increment_count
-      return food
-    end
+    # if food = Food.find_by(fdcId: fdcId)
+    #   food.increment_count
+    #   return food
+    # end
 
-    key = Rails.application.credentials[:usda][:key]
-    resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{fdcId}", headers= {'Content-Type':'application/json'})
-    resp = JSON.parse(resp)
-    
+    # key = Rails.application.credentials[:usda][:key]
+    # resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{fdcId}", headers= {'Content-Type':'application/json'})
+    # resp = JSON.parse(resp)
+    # byebug
     if resp["householdServingFullText"]
       unit_name = resp["householdServingFullText"]
     elsif resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
@@ -101,46 +101,6 @@ class Food < ApplicationRecord
     )
 
     food.add_info(resp)
-
-    if !(food.measures.length > 0)
-      if resp['foodClass'] == 'Branded' # success
-        measures = [Measure.find_or_create_by(
-          food: food,
-          amount: 1,
-          grams: serving_grams,
-          name: unit_name,
-        )]
-      else
-        resp['foodPortions'].each do |portion| # success
-          if portion['portionDescription']
-            name = portion['portionDescription']
-          elsif portion['modifier']
-            name = portion['modifier']
-          else
-            name = 'unit'
-          end
-          if portion['amount']
-            amount = portion['amount']
-          else
-            amount = 1
-          end
-          amount = 1 if !(amount > 0)
-          Measure.create(
-            food: food,
-            amount: amount,
-            grams: portion['gramWeight'],
-            name: name
-          )
-          
-        end
-      end
-      Measure.find_or_create_by(
-        food: food,
-        amount: 1,
-        grams: 1,
-        name: 'grams'
-      )
-    end
 
     return food
 
@@ -227,58 +187,66 @@ class Food < ApplicationRecord
     # self.save
     self.increment_count 
 
-    # if resp['foodClass'] == 'Branded' # success
-    #   measures = [Measure.find_or_create_by(
-    #     food: food,
-    #     amount: 1,
-    #     grams: serving_grams,
-    #     name: unit_name,
-    #   )]
-    # else
-    #   measures = []
-    #   resp['foodPortions'].each do |portion| # success
-    #     if portion['portionDescription']
-    #       name = portion['portionDescription']
-    #     elsif portion['modifier']
-    #       name = portion['modifier']
-    #     else
-    #       name = 'ATTENTION'
-    #     end
-    #     if portion['amount']
-    #       amount = portion['amount']
-    #     else
-    #       amount = 1
-    #     end
-    #     amount = 1 if !(amount > 0)
-    #     measure = Measure.find_or_create_by(
-    #       food: food,
-    #       amount: amount,
-    #       grams: portion['gramWeight'],
-    #       name: name
-    #     )
-    #     measures.push(measure)
-    #   end
-    # end
-    # measures.push(Measure.find_or_create_by(
-    #   food: food,
-    #   amount: 1,
-    #   grams: 1,
-    #   name: 'grams'
-    # ))
-    # day = (current_user ? current_user.days.last : Day.all.first)
-    # if measures.first.amount
-    #   amount = measures.first.amount
-    # else
-    #   amount = 1
-    # end
-    # choice = Choice.create(
-    #   food: food,
-    #   category_id: category_id, 
-    #   day_id: params['dayId'], ############################# PROBLEMS
-    #   amount: measures.first.amount, 
-    #   measure_id: measures.first.id, 
-    #   index: Time::new.to_i)
-    # puts choice.errors.full_messages
+  end
+  
+  def find_or_create_measures_by_resp(resp)
+    if self.measures && self.measures.length > 0
+      return self.measures
+    end
+    if resp['foodClass'] == 'Branded' # success
+      measures = [Measure.find_or_create_by(
+        food: food,
+        amount: 1,
+        grams: self.serving_grams,
+        name: self.unit_name,
+      )]
+    else
+      measures = []
+      resp['foodPortions'].each do |portion| # success
+        if portion['portionDescription']
+          name = portion['portionDescription']
+        elsif portion['modifier']
+          name = portion['modifier']
+        else
+          name = 'ATTENTION'
+        end
+        if portion['amount']
+          amount = portion['amount']
+        else
+          amount = 1
+        end
+        amount = 1 if !(amount > 0)
+        measure = Measure.find_or_create_by(
+          food: food,
+          amount: amount,
+          grams: portion['gramWeight'],
+          name: name
+        )
+        measures.push(measure)
+      end
+    end
+    measures.push(Measure.find_or_create_by(
+      food: food,
+      amount: 1,
+      grams: 1,
+      name: 'grams'
+    ))
+    day = (current_user ? current_user.days.last : Day.all.first)
+    if measures.first.amount
+      amount = measures.first.amount
+    else
+      amount = 1
+    end
+    choice = Choice.create(
+      food: food,
+      category_id: category_id, 
+      day_id: params['dayId'], ############################# PROBLEMS
+      amount: measures.first.amount, 
+      measure_id: measures.first.id, 
+      index: Time::new.to_i)
+    puts choice.errors.full_messages
+
+    return
   end
 
 end

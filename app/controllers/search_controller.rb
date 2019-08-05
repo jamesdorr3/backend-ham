@@ -47,9 +47,15 @@ class SearchController < ApplicationController
 
   def make_choice
 
-    food_and_measures = Food.find_or_create_and_update(params['fdcId'])
-    food = food_and_measures['food']
-    measures = food_and_measures['measures']
+    if food = Food.find_by(fdcId: params['fdcId'])
+      measures = food.measures
+    else
+      key = Rails.application.credentials[:usda][:key]
+      resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{params['fdcId']}", headers= {'Content-Type':'application/json'})
+      resp = JSON.parse(resp)
+      food = Food.find_or_create_and_update(resp)
+      measures = food.find_or_create_measures_by_resp(resp)
+    end
 
     day = (current_user ? current_user.days.last : Day.all.first) ############# nil ?
     # byebug
