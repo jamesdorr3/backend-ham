@@ -64,7 +64,7 @@ class SearchController < ApplicationController
     else
       amount = 1
     end
-    puts food, measures
+    # puts food, measures
     choice = Choice.create(
       food: food,
       category_id: params['categoryId'], 

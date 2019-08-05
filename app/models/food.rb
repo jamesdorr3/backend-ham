@@ -41,14 +41,6 @@ class Food < ApplicationRecord
     # resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{fdcId}", headers= {'Content-Type':'application/json'})
     # resp = JSON.parse(resp)
     # byebug
-    if resp["householdServingFullText"]
-      unit_name = resp["householdServingFullText"]
-    elsif resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
-      unit_name = "#{resp['foodPortions'][0]['portionDescription']}"
-      unit_name = 'unit' if unit_name == 'Quantity not specified'
-    else
-      unit_name = 'unit'
-    end
     
     # byebug
     if resp['servingSize']
@@ -193,12 +185,22 @@ class Food < ApplicationRecord
     if self.measures && self.measures.length > 0
       return self.measures
     end
+
+    if resp["householdServingFullText"]
+      unit_name = resp["householdServingFullText"]
+    elsif resp['foodPortions'][0] && resp['foodPortions'][0]['portionDescription'] ############## UNIT NAME
+      unit_name = "#{resp['foodPortions'][0]['portionDescription']}"
+      unit_name = 'unit' if unit_name == 'Quantity not specified'
+    else
+      unit_name = 'unit'
+    end
+
     if resp['foodClass'] == 'Branded' # success
       measures = [Measure.find_or_create_by(
-        food: food,
+        food: self,
         amount: 1,
         grams: self.serving_grams,
-        name: self.unit_name,
+        name: unit_name,
       )]
     else
       measures = []
@@ -208,8 +210,9 @@ class Food < ApplicationRecord
         elsif portion['modifier']
           name = portion['modifier']
         else
-          name = 'ATTENTION'
+          name = 'unit'
         end
+        if name
         if portion['amount']
           amount = portion['amount']
         else
@@ -217,7 +220,7 @@ class Food < ApplicationRecord
         end
         amount = 1 if !(amount > 0)
         measure = Measure.find_or_create_by(
-          food: food,
+          food: self,
           amount: amount,
           grams: portion['gramWeight'],
           name: name
@@ -226,25 +229,27 @@ class Food < ApplicationRecord
       end
     end
     measures.push(Measure.find_or_create_by(
-      food: food,
+      food: self,
       amount: 1,
       grams: 1,
       name: 'grams'
     ))
-    day = (current_user ? current_user.days.last : Day.all.first)
-    if measures.first.amount
-      amount = measures.first.amount
-    else
-      amount = 1
-    end
-    choice = Choice.create(
-      food: food,
-      category_id: category_id, 
-      day_id: params['dayId'], ############################# PROBLEMS
-      amount: measures.first.amount, 
-      measure_id: measures.first.id, 
-      index: Time::new.to_i)
-    puts choice.errors.full_messages
+
+    return measures
+    # day = (current_user ? current_user.days.last : Day.all.first)
+    # if measures.first.amount
+    #   amount = measures.first.amount
+    # else
+    #   amount = 1
+    # end
+    # choice = Choice.create(
+    #   food: food,
+    #   category_id: category_id, 
+    #   day_id: params['dayId'], ############################# PROBLEMS
+    #   amount: measures.first.amount, 
+    #   measure_id: measures.first.id, 
+    #   index: Time::new.to_i)
+    # puts choice.errors.full_messages
 
     return
   end
