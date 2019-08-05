@@ -89,7 +89,7 @@ class Food < ApplicationRecord
       fat: fat,
       carbs: carbs,
       protein: protein,
-      brand: resp['brandOwner'],
+      brand: resp['brandOwner'], ###############################
     )
 
     food.add_info(resp)
@@ -175,7 +175,16 @@ class Food < ApplicationRecord
     upc = resp['gtinUpc']
     # byebug
 
-    self.update(fdcId: resp['fdcId'], upc: upc, cholesterol: cholesterol, dietary_fiber: fiber, potassium: potassium, saturated_fat: saturated_fat, sodium: sodium, sugars: sugars)
+    self.update(
+      fdcId: resp['fdcId'], 
+      upc: upc,  ###################################
+      cholesterol: cholesterol, 
+      dietary_fiber: fiber, 
+      potassium: potassium, 
+      saturated_fat: saturated_fat, 
+      sodium: sodium, 
+      sugars: sugars
+    )
     # self.save
     self.increment_count 
 
@@ -212,7 +221,6 @@ class Food < ApplicationRecord
         else
           name = 'unit'
         end
-        if name
         if portion['amount']
           amount = portion['amount']
         else
@@ -251,7 +259,51 @@ class Food < ApplicationRecord
     #   index: Time::new.to_i)
     # puts choice.errors.full_messages
 
-    return
+  end
+
+  def self.take_all_foods_from_USDA()
+    # cache_tracker = CacheTracker.last
+    # cache_tracker.update(searching: !cache_tracker['searching'])
+    total_pages = 999999
+    count = 0
+
+    while (count < 1 && CacheTracker.last.page <= total_pages) ## 50 foods per page
+
+      key = Rails.application.credentials[:usda][:key]
+      resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"","requireAllWords":"false","pageNumber":"#{CacheTracker.last.page}"}.to_json, headers= {'Content-Type':'application/json'})
+      resp = JSON.parse(resp)
+
+      total_pages = resp['totalPages']
+      current_page = resp['currentPage']
+      # CacheTracker.last.update(page: current_page + 1)
+
+      resp['foods'].each do |food|
+        count += 1
+        if !new_food = Food.find_by(fdcId: food['fdcId'])
+          
+          new_food_resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{food['fdcId']}", headers= {'Content-Type':'application/json'})
+          new_food_resp = JSON.parse(new_food_resp)
+          byebug
+          new_food = Food.find_or_create_and_update(new_food_resp)
+          new_food.find_or_create_measures_by_resp(new_food_resp)
+        end
+        new_food.update(choice_count: 0) if new_food.choice_count == 1
+      end
+
+      # debugger
+
+    end
+
+
+    # def many
+    #   search_phrase = params['q']
+    #   page_number = params['pageNumber']
+    #   # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
+    #   # resp['foods'].each do |food|
+    #   #   Food.find_or_create_and_update(food['fdcId'])
+    #   # end
+    #   render json: {common: resp["foods"], resp: resp, current_page: resp['currentPage'], total_pages: resp['totalPages']}
+    # end
   end
 
 end

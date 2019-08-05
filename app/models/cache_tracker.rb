@@ -1,0 +1,2 @@
+class CacheTracker < ApplicationRecord
+end
