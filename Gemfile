@@ -50,3 +50,11 @@ gem "jwt", "~> 2.1"
 gem "active_model_serializers", "~> 0.10.9"
 
 gem "lemmatizer"
+
+gem "capybara"
+
+gem "poltergeist"
+
+gem 'phantomjs'
+
+gem 'rspec-rails'

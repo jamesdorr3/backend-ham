@@ -261,22 +261,22 @@ class Food < ApplicationRecord
 
   end
 
-  def self.cache_from_USDA()
+  def self.cache_from_USDA(search_term = '')
     CacheTracker.last.update(page: CacheTracker.last.page - 1)
     total_pages = 999999
-    count = 0
+    current_page = 0
 
-    while (count < 999999 && CacheTracker.last.page <= total_pages) ## 50 foods per page
+    while (current_page <= total_pages) ## 50 foods per page
 
       key = Rails.application.credentials[:usda][:key]
-      resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"","requireAllWords":"false","pageNumber":"#{CacheTracker.last.page}"}.to_json, headers= {'Content-Type':'application/json'})
+      resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_term}","requireAllWords":"false","pageNumber": current_page}.to_json, headers= {'Content-Type':'application/json'})
       resp = JSON.parse(resp)
 
       total_pages = resp['totalPages']
-      current_page = resp['currentPage']
+      current_page = resp['currentPage'] + 1
       
       resp['foods'].each do |food|
-        count += 1
+        # count += 1
         if !new_food = Food.find_by(fdcId: food['fdcId'])
           
           new_food_resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{food['fdcId']}", headers= {'Content-Type':'application/json'})
@@ -286,7 +286,7 @@ class Food < ApplicationRecord
           new_food.find_or_create_measures_by_resp(new_food_resp)
         end
         new_food.update(choice_count: 0) if new_food.choice_count == 1
-        CacheTracker.last.update(page: current_page + 1)
+        # CacheTracker.last.update(page: current_page + 1)
       end
     end
   end
