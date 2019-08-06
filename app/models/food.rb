@@ -261,9 +261,8 @@ class Food < ApplicationRecord
 
   end
 
-  def self.take_all_foods_from_USDA()
-    # cache_tracker = CacheTracker.last
-    # cache_tracker.update(searching: !cache_tracker['searching'])
+  def self.cache_from_USDA()
+    CacheTracker.last.update(page: CacheTracker.last.page - 1)
     total_pages = 999999
     count = 0
 
@@ -272,7 +271,7 @@ class Food < ApplicationRecord
       key = Rails.application.credentials[:usda][:key]
       resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"","requireAllWords":"false","pageNumber":"#{CacheTracker.last.page}"}.to_json, headers= {'Content-Type':'application/json'})
       resp = JSON.parse(resp)
-      byebug
+
       total_pages = resp['totalPages']
       current_page = resp['currentPage']
       
@@ -289,21 +288,7 @@ class Food < ApplicationRecord
         new_food.update(choice_count: 0) if new_food.choice_count == 1
         CacheTracker.last.update(page: current_page + 1)
       end
-
-      # debugger
-
     end
-
-
-    # def many
-    #   search_phrase = params['q']
-    #   page_number = params['pageNumber']
-    #   # foods = Food.all.find_all{|x| x.name.downcase.include?(search_phrase)}
-    #   # resp['foods'].each do |food|
-    #   #   Food.find_or_create_and_update(food['fdcId'])
-    #   # end
-    #   render json: {common: resp["foods"], resp: resp, current_page: resp['currentPage'], total_pages: resp['totalPages']}
-    # end
   end
 
 end
