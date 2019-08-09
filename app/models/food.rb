@@ -1,3 +1,4 @@
+require 'faker'
 class Food < ApplicationRecord
   has_many :choices
   # belongs_to :user
@@ -262,16 +263,22 @@ class Food < ApplicationRecord
   end
 
   def self.cache_from_USDA(search_term = '')
-    CacheTracker.last.update(page: CacheTracker.last.page - 1)
+    if search_term == ''
+      # dish, fruits, ingredient, vegetables
+      search_term = Faker::Food.ingredient
+    end
+    # CacheTracker.last.update(page: CacheTracker.last.page - 1)
     total_pages = 999999
-    current_page = 0
+    current_page = 1
+    # count = 0
 
-    while (current_page <= total_pages) ## 50 foods per page
+    while true #(current_page <= total_pages) ## 50 foods per page
 
       key = Rails.application.credentials[:usda][:key]
       resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_term}","requireAllWords":"false","pageNumber": current_page}.to_json, headers= {'Content-Type':'application/json'})
       resp = JSON.parse(resp)
 
+      # count += 1
       total_pages = resp['totalPages']
       current_page = resp['currentPage'] + 1
       
@@ -281,6 +288,7 @@ class Food < ApplicationRecord
           
           new_food_resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{food['fdcId']}", headers= {'Content-Type':'application/json'})
           new_food_resp = JSON.parse(new_food_resp)
+          # count += 1
           # byebug
           new_food = Food.find_or_create_and_update(new_food_resp)
           new_food.find_or_create_measures_by_resp(new_food_resp)

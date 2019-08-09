@@ -58,3 +58,5 @@ gem "poltergeist"
 gem 'phantomjs'
 
 gem 'rspec-rails'
+
+gem 'faker'
