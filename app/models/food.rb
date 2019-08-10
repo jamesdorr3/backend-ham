@@ -173,7 +173,7 @@ class Food < ApplicationRecord
     #   trans_fat = nil
     # end
 
-    upc = resp['gtinUpc']
+    upc = resp['gtinUpc'] ## or food code?
     # byebug
 
     self.update(
@@ -205,11 +205,14 @@ class Food < ApplicationRecord
       unit_name = 'unit'
     end
 
+    # resp['servingSize']
+    # resp['servingSizeUnit']
+
     if resp['foodClass'] == 'Branded' # success
       measures = [Measure.find_or_create_by(
         food: self,
         amount: 1,
-        grams: self.serving_grams,
+        grams: self.serving_grams, ### make servingSize OR self.serving_grams
         name: unit_name,
       )]
     else
