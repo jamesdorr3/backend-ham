@@ -9,32 +9,7 @@ class FoodsController < ApplicationController
 
     def search(foods, search_phrase)
       return foods if search_phrase == ''
-      # search_phrase_arr = []
-      # lem = Lemmatizer.new
-      # search_phrase.downcase.scan(/\w+/).each do |word|
-      #   search_phrase_arr << word
-      #   lemma = lem.lemma(word)
-      #   search_phrase_arr << lemma if word != lemma
-      # end
       foods.find_all do |food|
-        # search_phrase_arr.any? do |word|
-        #   name = food.name.downcase
-        #   name = name + ' ' + food.brand.downcase if food.brand
-        #   puts name
-        #   name.include?(word)
-        # end
-
-        # count = 0
-        # results = x.name.downcase.scan(/\w+/)
-        # results = results + x.brand.downcase.scan(/\w+/) if x.brand
-        # results.map!{|word| lem.lemma(word)}
-        # search_phrase_arr.each do |word|
-        #   count += 1 if results.include?(word) 
-        # end
-        # results.each do |word|
-        #   count += 1 if search_phrase_arr.include?(word)
-        # end
-        # count > 0
 
         search_phrase = search_phrase.downcase
         food_name = food.name.downcase
@@ -65,20 +40,47 @@ class FoodsController < ApplicationController
       return favorites.uniq[0,10]
     end
 
-    if current_user && current_user.foods
-      favorites = select_favorites(current_user.foods, search_phrase)
+    if search_phrase.match?(/\A\d{8,}\Z/)
+      if food = Food.find_by(upc: search_phrase)
+        foods = []
+        foods << food
+        render json: {favorites: [food], internal: nil}
+      end
+    elsif search_phrase.match?(/\A(\d{1,3}.){2}\d{1,3}\Z/)
+      search_phrase = search_phrase.split('.')
+      fat = search_phrase[0].to_i
+      carbs = search_phrase[1].to_i
+      protein = search_phrase[2].to_i
+      macro_sum = fat + carbs + protein
+      fat = fat*100 / macro_sum
+      carbs = carbs*100 / macro_sum
+      protein = protein*100 / macro_sum
+      foods = Food.all.select do |food|
+        macro_sum = food.fat + food.carbs + food.protein
+        food.fat*100 / macro_sum < fat + 1 &&
+        food.fat*100 / macro_sum > fat - 1 &&
+        food.carbs*100 / macro_sum > carbs - 1 &&
+        food.carbs*100 / macro_sum > carbs - 1 &&
+        food.protein*100 / macro_sum > protein - 1 &&
+        food.protein*100 / macro_sum > protein - 1
+      end
+      render json: {favorites: foods, internal: nil}
     else
-      favorites = select_favorites(Food.all, search_phrase)
+      if current_user && current_user.foods
+        favorites = select_favorites(current_user.foods, search_phrase)
+      else
+        favorites = select_favorites(Food.all, search_phrase)
+      end
+      
+      if search_phrase == ''
+        internal = []
+      else
+        internal = search(Food.all, search_phrase)
+        check_choice_count(internal)
+        internal = internal.filter{|x| !favorites.map(&:id).include?(x['id'])}
+      end
+      render json: {favorites: favorites, internal: internal.uniq}
     end
-    
-    if search_phrase == ''
-      internal = []
-    else
-      internal = search(Food.all, search_phrase)
-      check_choice_count(internal)
-      internal = internal.filter{|x| !favorites.map(&:id).include?(x['id'])}
-    end
-    render json: {favorites: favorites, internal: internal.uniq}
   end
 
   def create

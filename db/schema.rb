@@ -74,6 +74,35 @@ ActiveRecord::Schema.define(version: 2019_08_05_041705) do
     t.string "unit_size"
     t.string "upc"
     t.bigint "user_id"
+    # calcium
+    # iron
+    # vitamin A
+    # vitamin B-6
+    # vitamin B-12
+    # vitamin C
+    # vitamin D
+    # vitamin E
+    # thiamin
+    # Riboflavin
+    # niacin
+    # Pantothenic acid
+    # trans fat
+    # mono unsaturated fat
+    # poly unsaturated fat
+    # folate
+    # alcohol
+    # water
+    # Theobromine
+    # Magnesium, Mg *** 
+    # Phosphorus, P *** 
+    # Zinc, Zn
+    # Copper, Cu
+    # Selenium, Se
+    # Retinol
+    # Carotene, beta
+    # Carotene, alph
+    # Cryptoxanthin, beta
+    # additional description
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "choice_count"
