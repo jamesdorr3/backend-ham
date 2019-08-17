@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 2019_07_30_043944) do
     t.float "saturated_fat"
     t.float "sodium"
     t.float "sugars"
-    t.string "unit_size"
     t.string "upc"
     t.bigint "user_id"
     t.datetime "created_at", null: false

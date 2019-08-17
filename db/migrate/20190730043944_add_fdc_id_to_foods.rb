@@ -11,6 +11,7 @@ class AddFdcIdToFoods < ActiveRecord::Migration[5.2]
     add_column :foods, :lactose, :float
     remove_column :foods, :serving_unit_name, :string
     remove_column :foods, :serving_unit_amount, :float
+    remove_column :foods, :unit_size, :int
     add_column :foods, :additional_search_words, :string
     add_column :foods, :description, :string
   end
