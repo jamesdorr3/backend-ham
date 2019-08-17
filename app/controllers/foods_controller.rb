@@ -1,5 +1,3 @@
-require "lemmatizer"
-
 class FoodsController < ApplicationController
 
   skip_before_action :authorized, only: [:create,:index]
@@ -77,9 +75,9 @@ class FoodsController < ApplicationController
       else
         internal = search(Food.all, search_phrase)
         check_choice_count(internal)
-        internal = internal.filter{|x| !favorites.map(&:id).include?(x['id'])}
+        # internal = internal.filter{|x| !favorites.map(&:id).include?(x['id'])}
       end
-      render json: {favorites: favorites, internal: internal.uniq}
+      render json: {favorites: favorites, internal: nil}
     end
   end
 
