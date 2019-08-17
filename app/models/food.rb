@@ -1,4 +1,5 @@
 require 'faker'
+require 'lemmatizer'
 class Food < ApplicationRecord
   has_many :choices
   # belongs_to :user
@@ -44,9 +45,9 @@ class Food < ApplicationRecord
     # byebug
     
     # byebug
-    if resp['servingSize']
+    if resp['servingSize'] # branded
       serving_grams = resp['servingSize']
-    elsif resp['foodPortions'][0]
+    elsif resp['foodPortions'][0] # survey final
       serving_grams = resp['foodPortions'][0]['gramWeight']
     end
     serving_grams = 1 if !serving_grams || serving_grams < 1
@@ -81,7 +82,7 @@ class Food < ApplicationRecord
       calories = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == 'Energy'}['amount'] * serving_grams / 100
     else
       calories = fat * 9 + carbs * 4 + protein * 4
-    end
+    end  
 
     food = Food.find_or_create_by(
       name: resp['description'],
@@ -90,7 +91,7 @@ class Food < ApplicationRecord
       fat: fat,
       carbs: carbs,
       protein: protein,
-      brand: resp['brandOwner'], ###############################
+      brand: resp['brandOwner'],
     )
 
     food.add_info(resp)
@@ -106,7 +107,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fatty acids, total saturated"}
       saturated_fat = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fatty acids, total saturated"}['amount'] * serving_grams / 100
     else
-      saturated_fat = nil
+      saturated_fat = 0
     end
     
     if resp['labelNutrients'] && resp['labelNutrients']["cholesterol"]
@@ -114,7 +115,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Cholesterol"}
       cholesterol = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Cholesterol"}['amount'] * serving_grams / 100
     else
-      cholesterol = nil
+      cholesterol = 0
     end
 
     if resp['labelNutrients'] && resp['labelNutrients']['fiber']
@@ -122,7 +123,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fiber, total dietary"}
       fiber = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fiber, total dietary"}['amount'] * serving_grams / 100
     else
-      fiber = nil
+      fiber = 0
     end
 
     if resp['labelNutrients'] && resp['labelNutrients']['potassium']
@@ -130,7 +131,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Potassium, K"}
       potassium = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Potassium, K"}['amount'] * serving_grams / 100
     else
-      potassium = nil
+      potassium = 0
     end
 
     if resp['labelNutrients'] && resp['labelNutrients']['sodium']
@@ -138,7 +139,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Sodium, Na"}
       sodium = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Sodium, Na"}['amount'] * serving_grams / 100
     else
-      sodium = nil
+      sodium = 0
     end
 
     if resp['labelNutrients'] && resp['labelNutrients']['sugars']
@@ -146,7 +147,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Sugars, total including NLEA"}
       sugars = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Sugars, total including NLEA"}['amount'] * serving_grams / 100
     else
-      sugars = nil
+      sugars = 0
     end
 
     if resp['labelNutrients'] && resp['labelNutrients']['calcium']
@@ -154,7 +155,7 @@ class Food < ApplicationRecord
     elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Calcium, Ca"}
       calcium = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Calcium, Ca"}['amount'] * serving_grams / 100
     else
-      calcium = nil
+      calcium = 0
     end
 
     # if resp['labelNutrients'] && resp['labelNutrients']['iron']
@@ -162,7 +163,7 @@ class Food < ApplicationRecord
     # elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Iron, Fe"}
     #   iron = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Iron, Fe"}['amount'] * serving_grams / 100
     # else
-    #   iron = nil
+    #   iron = 0
     # end
 
     # if resp['labelNutrients'] && resp['labelNutrients']["transFat"]
@@ -170,14 +171,33 @@ class Food < ApplicationRecord
     # elsif resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fatty acids, total trans"}
     #   trans_fat = resp["foodNutrients"].find{|x| x["nutrient"]['name'] == "Fatty acids, total trans"}['amount'] * serving_grams / 100
     # else
-    #   trans_fat = nil
+    #   trans_fat = 0
     # end
+
+    if resp['foodAttributes'] && resp['foodAttributes'][0] && resp['foodAttributes'][0]['value']
+      description = resp['foodAttributes'][0]['value']
+    else
+      description = ''
+    end
+
+    # byebug
+    additional_search_words = []
+    lem = Lemmatizer.new
+    more_descriptors = "#{self.name} #{self.brand} #{description}"
+    more_descriptors.scan(/\w+/).each do |word|
+      lemma = lem.lemma(word)
+      if !more_descriptors.include?(lemma)
+        additional_search_words << lemma
+      end
+    end
 
     upc = resp['gtinUpc'] ## or food code?
     # byebug
 
     self.update(
       fdcId: resp['fdcId'], 
+      description: description,
+      additional_search_words: additional_search_words.join(' '),
       upc: upc,  ###################################
       cholesterol: cholesterol, 
       dietary_fiber: fiber, 
@@ -266,38 +286,32 @@ class Food < ApplicationRecord
   end
 
   def self.cache_from_USDA(search_term = '')
-    if search_term == ''
-      # dish, fruits, ingredient, vegetables
-      search_term = Faker::Food.ingredient
-    end
-    # CacheTracker.last.update(page: CacheTracker.last.page - 1)
+    
+    search_term = Faker::Food.ingredient if search_term == '' # dish, fruits, ingredient, vegetables
+
     total_pages = 999999
     current_page = 1
-    # count = 0
 
-    while true #(current_page <= total_pages) ## 50 foods per page
+    while (current_page <= total_pages) ## 50 foods per page
 
       key = Rails.application.credentials[:usda][:key]
       resp = RestClient.post("https://#{key}@api.nal.usda.gov/fdc/v1/search", {"generalSearchInput":"#{search_term}","requireAllWords":"false","pageNumber": current_page}.to_json, headers= {'Content-Type':'application/json'})
       resp = JSON.parse(resp)
 
-      # count += 1
       total_pages = resp['totalPages']
       current_page = resp['currentPage'] + 1
       
       resp['foods'].each do |food|
-        # count += 1
         if !new_food = Food.find_by(fdcId: food['fdcId'])
           
           new_food_resp = RestClient.get("https://#{key}@api.nal.usda.gov/fdc/v1/#{food['fdcId']}", headers= {'Content-Type':'application/json'})
           new_food_resp = JSON.parse(new_food_resp)
-          # count += 1
-          # byebug
+
           new_food = Food.find_or_create_and_update(new_food_resp)
           new_food.find_or_create_measures_by_resp(new_food_resp)
         end
         new_food.update(choice_count: 0) if new_food.choice_count == 1
-        # CacheTracker.last.update(page: current_page + 1)
+
       end
     end
   end

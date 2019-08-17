@@ -1,5 +1,3 @@
-require "lemmatizer"
-
 class FoodsController < ApplicationController
 
   skip_before_action :authorized, only: [:create,:index]

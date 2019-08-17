@@ -10,17 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_05_041705) do
+ActiveRecord::Schema.define(version: 2019_07_30_043944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "cache_trackers", force: :cascade do |t|
-    t.integer "page"
-    t.boolean "searching"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -58,8 +51,6 @@ ActiveRecord::Schema.define(version: 2019_08_05_041705) do
   create_table "foods", force: :cascade do |t|
     t.string "name"
     t.integer "serving_grams"
-    t.string "serving_unit_name"
-    t.float "serving_unit_amount"
     t.string "brand"
     t.float "calories"
     t.float "fat"
@@ -74,39 +65,20 @@ ActiveRecord::Schema.define(version: 2019_08_05_041705) do
     t.string "unit_size"
     t.string "upc"
     t.bigint "user_id"
-    # calcium
-    # iron
-    # vitamin A
-    # vitamin B-6
-    # vitamin B-12
-    # vitamin C
-    # vitamin D
-    # vitamin E
-    # thiamin
-    # Riboflavin
-    # niacin
-    # Pantothenic acid
-    # trans fat
-    # mono unsaturated fat
-    # poly unsaturated fat
-    # folate
-    # alcohol
-    # water
-    # Theobromine
-    # Magnesium, Mg *** 
-    # Phosphorus, P *** 
-    # Zinc, Zn
-    # Copper, Cu
-    # Selenium, Se
-    # Retinol
-    # Carotene, beta
-    # Carotene, alph
-    # Cryptoxanthin, beta
-    # additional description
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "choice_count"
     t.bigint "fdcId"
+    t.float "calcium"
+    t.float "iron"
+    t.float "trans_fat"
+    t.float "alcohol"
+    t.float "caffeine"
+    t.float "mono_fat"
+    t.float "poly_fat"
+    t.float "lactose"
+    t.string "additional_search_words"
+    t.string "description"
     t.index ["user_id"], name: "index_foods_on_user_id"
   end
 
