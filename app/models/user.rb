@@ -29,4 +29,12 @@ class User < ApplicationRecord
     end if day
   end
 
+  # def delete_with_dependencies
+  #   self.choices.destroy_all
+  #   self.categories.destroy_all
+  #   self.days.destroy_all
+  #   self.goals.destroy_all
+  #   self.destroy
+  # end
+
 end
