@@ -64,7 +64,7 @@ class FoodsController < ApplicationController
       end
       render json: {favorites: foods, internal: nil}
     else
-      if current_user && current_user.foods
+      if current_user && current_user.foods.length >= 10
         favorites = select_favorites(current_user.foods, search_phrase)
       else
         favorites = select_favorites(Food.all, search_phrase)
@@ -83,15 +83,16 @@ class FoodsController < ApplicationController
 
   def create
     food = Food.find_or_create_by(food_params)
+    # byebug
     measure = Measure.create(
       food: food,
-      amount: food.serving_unit_amount,
-      grams: food.serving_grams,
-      name: food.serving_unit_name
+      amount: params["serving_unit_amount"],
+      grams: params["serving_grams"],
+      name: params["serving_unit_name"]
     )
     food.create_grams_measure
     choice = Choice.create(food: food, category_id: params[:categoryId], day: current_user.days.last,
-    amount: food.serving_unit_amount, 
+    amount: params["serving_unit_amount"], 
     measure_id: measure.id, 
     index: Time::new.to_i)
     render json: {choice: choice, food: food, measures: food.measures}
