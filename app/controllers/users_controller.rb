@@ -26,7 +26,7 @@ class UsersController < ApplicationController
       goal = Goal.create(user: @user, name: 'Macro Goals', calories: 0, fat: 0, carbs: 0, protein: 0)
       Day.create(goal: goal, date: Date.today)
       @token = encode_token({ user_id: @user.id })
-      UserMailer.account_activation(@user).deliver_now
+      UserMailer.welcome_email(@user).deliver_now
       render json: { error: "Activation email sent to #{@user.email}"}
       # render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
     else

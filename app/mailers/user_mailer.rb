@@ -5,11 +5,9 @@ class UserMailer < ApplicationMailer
   #
   #   en.user_mailer.account_activation.subject
   #
-  def account_activation(user)
+  def welcome_email(user)
     @user = user
-    @greeting = "Hi"
-
-    mail to: @user.email, subject: "HAM Account Activation"
+    mail to: @user.email, subject: "HAM - Welcome!"
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
