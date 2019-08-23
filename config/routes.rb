@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :foods
   resources :users
   resources :auth
+  resources :account_activations, only: [:edit]
   post '/search/make_choice', to: 'search#make_choice'
   # get '/search/get_nix_food', to: 'search#get_nix_food'
   get '/search/many', to: 'search#many'

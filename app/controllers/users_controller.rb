@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 
   def create ## problems
     @user = User.create(user_params)
+    @user.create_activation_digest
     if @user.valid?
       Category.create(user: @user, name: 'Breakfast')
       Category.create(user: @user, name: 'Lunch')
@@ -30,7 +31,7 @@ class UsersController < ApplicationController
       render json: { error: 'failed to create user' }, status: :not_acceptable
     end
   end
-
+  
   private
 
   def user_params
@@ -40,5 +41,6 @@ class UsersController < ApplicationController
   def update_user_params
     params.require(:user).permit(:calories, :fat, :carbs, :protein)
   end
+
 
 end
