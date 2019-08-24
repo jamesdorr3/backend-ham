@@ -6,11 +6,12 @@ Rails.application.routes.draw do
   resources :foods
   resources :users
   resources :auth
-  resources :account_activations, only: [:edit]
+  get '/email_confirmation', to: 'users#email_confirmation'
   post '/search/make_choice', to: 'search#make_choice'
   # get '/search/get_nix_food', to: 'search#get_nix_food'
   get '/search/many', to: 'search#many'
   post '/reauth', to: 'auth#reauth'
+  get '/confirm_email', to: 'auth#confirm_email'
   patch '/saveall', to: 'save_all#update'
   get 'search/internal_search', to: 'search#internal_search'
   get 'search/favorite_search', to: 'search#favorite_search'
