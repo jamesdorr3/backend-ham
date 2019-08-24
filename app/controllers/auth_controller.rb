@@ -42,7 +42,7 @@ class AuthController < ApplicationController
     # end
   end
 
-  def confirm_email
+  def edit
     # JWT.encode(payload, Rails.application.credentials.jwt[:secret])
     # JWT.decode(token, Rails.application.credentials.jwt[:secret], true, algorithm: 'HS256')
     user = User.find_by(username: params['email'])
