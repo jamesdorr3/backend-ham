@@ -1,0 +1,10 @@
+require 'uri'
+<h1>HAM</h1>
+
+<p>Hi <%= @user.username %>,</p>
+
+<p>
+Welcome to HAM! Click on the link below to activate your account:
+</p>
+
+<a href="localhost:3001/confirm_email?email=#{URI::encode(@user.activation_digest)}&token=#{URI::encode(@user.email)}">Activate</a>

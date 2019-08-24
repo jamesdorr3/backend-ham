@@ -37,15 +37,8 @@ class User < ApplicationRecord
   #   self.destroy
   # end
 
-  def self.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                  BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
-  end
-
   def create_activation_digest
-    activation_token  = SecureRandom.urlsafe_base64
-    self.activation_digest = User.digest(activation_token)
+    self.activation_digest = SecureRandom.urlsafe_base64
     if !self.save
       puts self.errors
     end
