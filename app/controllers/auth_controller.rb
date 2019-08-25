@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  skip_before_action :authorized, only: [:create, :confirm_email]
+  skip_before_action :authorized, only: [:create, :edit]
 
   def create
     # byebug

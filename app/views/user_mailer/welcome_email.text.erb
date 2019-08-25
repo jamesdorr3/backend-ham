@@ -2,4 +2,4 @@ Hi <%= @user.username %>,
 
 Welcome to the HAM! Click on the link below to activate your account:
 
-<a href="localhost:3001/confirm_email?email=#{URI::encode(@user.activation_digest)}&token=#{URI::encode(@user.email)}">Activate</a>
+<%= edit_auth_url(@user.activation_digest, email: @user.email) %>
