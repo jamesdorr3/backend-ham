@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :foods, through: :choices
   has_many :categories
 
+  before_save :downcase_email
+
   def day
     self.days.last
   end
@@ -52,6 +54,10 @@ class User < ApplicationRecord
     digest = self.activation_digest
     return false if digest.nil?
     BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  def downcase_email
+    self.email = email.downcase
   end
 
 end

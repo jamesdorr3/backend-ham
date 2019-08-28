@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   resources :choices
   resources :foods
   resources :users
-  resources :auth
+  resources :auth, only: [:create, :edit]
+  # resources :account_activations, only: [:edit]
   get '/email_confirmation', to: 'users#email_confirmation'
   post '/search/make_choice', to: 'search#make_choice'
   # get '/search/get_nix_food', to: 'search#get_nix_food'

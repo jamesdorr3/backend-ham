@@ -2,13 +2,13 @@ class AuthController < ApplicationController
   skip_before_action :authorized, only: [:create, :edit]
 
   def create
-    # byebug
     @user = User.find_by(username: user_login_params[:username_or_email])
+    # byebug
     if !@user
       @user = User.find_by(email: user_login_params[:username_or_email])
     end
     # byebug
-    if @user && @user.authenticate(user_login_params[:password] && @user.activated_at)
+    if @user && @user.authenticate(user_login_params[:password]) && @user.activated_at
       token = encode_token({user_id: @user.id})
       render json: { 
         user: UserSerializer.new(@user),
@@ -45,12 +45,13 @@ class AuthController < ApplicationController
   def edit
     # JWT.encode(payload, Rails.application.credentials.jwt[:secret])
     # JWT.decode(token, Rails.application.credentials.jwt[:secret], true, algorithm: 'HS256')
-    user = User.find_by(username: params['email'])
-    token = params['token']
+    user = User.find_by(email: params['email'])
+    token = params['id']
+    # debugger
     if user && user.activation_digest == token
       user.update(activated_at: Time.now)
     end
-    redirect_to 'https://jamesdorr3.github.io'
+    redirect_to 'https://jamesdorr3.github.io/ham'
   end
 
   private
