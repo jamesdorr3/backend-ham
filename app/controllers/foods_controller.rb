@@ -91,10 +91,14 @@ class FoodsController < ApplicationController
       name: params["serving_unit_name"]
     )
     food.create_grams_measure
-    choice = Choice.create(food: food, category_id: params[:categoryId], day: current_user.days.last,
-    amount: params["serving_unit_amount"], 
-    measure_id: measure.id, 
-    index: Time::new.to_i)
+    choice = Choice.create(
+      food: food, 
+      category_id: params[:categoryId], 
+      day_id: params[:dayId],
+      amount: params["serving_unit_amount"], 
+      measure_id: measure.id, 
+      index: Time::new.to_i
+    )
     render json: {choice: choice, food: food, measures: food.measures}
   end
 
