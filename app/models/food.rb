@@ -1,9 +1,9 @@
 require 'faker'
 require 'lemmatizer'
 class Food < ApplicationRecord
-  has_many :choices
-  # belongs_to :user
-  has_many :measures
+  has_many :choices, dependent: :destroy
+  belongs_to :user
+  has_many :measures, dependent: :destroy
 
   def create_grams_measure
     Measure.find_or_create_by(
@@ -14,28 +14,9 @@ class Food < ApplicationRecord
     )
   end
 
-  def increment_count
-    if self.choice_count
-      self.choice_count += 1
-    else
-      self.choice_count = self.choices.count + 1
-    end
-    self.save
-  end
-
-  def decrement_count
-    if food.choice_count && food.choice_count > 0
-      food.choice_count += 1
-    else
-      food.choice_count = 0
-    end
-    food.save
-  end
-
   def self.find_or_create_and_update(resp)
 
     # if food = Food.find_by(fdcId: fdcId)
-    #   food.increment_count
     #   return food
     # end
 
@@ -255,7 +236,6 @@ class Food < ApplicationRecord
       lactose: lactose
     )
     # self.save
-    self.increment_count 
 
   end
   
@@ -272,6 +252,7 @@ class Food < ApplicationRecord
     else
       unit_name = 'unit'
     end
+    unit_name = 'unit' if unit_name == ''
 
     if resp['servingSize']
       grams = resp['servingSize']
@@ -283,7 +264,7 @@ class Food < ApplicationRecord
     # resp['servingSizeUnit']
 
     if resp['foodClass'] == 'Branded' # success
-      measures = [Measure.find_or_create_by(
+      measures = [Measure.find_or_create_and_extract_numbers(
         food: self,
         amount: 1,
         grams: grams, ### make servingSize OR self.serving_grams
@@ -305,7 +286,7 @@ class Food < ApplicationRecord
           amount = 1
         end
         amount = 1 if !(amount > 0)
-        measure = Measure.find_or_create_by(
+        measure = Measure.find_or_create_and_extract_numbers(
           food: self,
           amount: amount,
           grams: portion['gramWeight'],
@@ -314,7 +295,7 @@ class Food < ApplicationRecord
         measures.push(measure)
       end
     end
-    measures.push(Measure.find_or_create_by(
+    measures.push(Measure.find_or_create_and_extract_numbers(
       food: self,
       amount: 1,
       grams: 1,

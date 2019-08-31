@@ -2,13 +2,7 @@ class ChoicesController < ApplicationController
   skip_before_action :authorized, only: [:update, :destroy, :create]
 
   def create
-    # byebug
     food = Food.find(params[:foodId])
-    if food.choice_count
-      food.choice_count += 1
-    else
-      food.choice_count = food.choices.count + 1
-    end
     food.save
     day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
@@ -49,8 +43,6 @@ class ChoicesController < ApplicationController
 
   def destroy
     choice = Choice.find(params[:id])
-    choice.food.choice_count -= 1
-    choice.food.save
     choice.destroy
   end
 

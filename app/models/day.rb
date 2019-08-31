@@ -1,6 +1,6 @@
 class Day < ApplicationRecord
   belongs_to :goal
-  has_many :choices
+  has_many :choices, dependent: :destroy
   has_many :foods, through: :choices
   has_many :categories, through: :choices
 
