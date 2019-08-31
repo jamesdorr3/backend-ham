@@ -4,11 +4,11 @@ class User < ApplicationRecord
   validates :email, uniqueness: {case_sensitive: false}
   validates :username, uniqueness: {case_sensitive: false}
 
-  has_many :goals
-  has_many :days, through: :goals
+  has_many :goals, dependent: :destroy
+  has_many :days, through: :goals, dependent: :destroy
   has_many :choices, through: :days
   has_many :foods, through: :choices
-  has_many :categories
+  has_many :categories, dependent: :destroy
 
   before_save :downcase_email
 
@@ -31,14 +31,6 @@ class User < ApplicationRecord
     end if day
   end
 
-  # def delete_with_dependencies
-  #   self.choices.destroy_all
-  #   self.categories.destroy_all
-  #   self.days.destroy_all
-  #   self.goals.destroy_all
-  #   self.destroy
-  # end
-
   def create_activation_digest
     self.activation_digest = SecureRandom.urlsafe_base64
     if !self.save
@@ -58,6 +50,26 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase
+  end
+
+  def generate_password_token!
+    self.reset_password_token = generate_token
+    self.reset_password_sent_at = Time.now.utc
+    self.save!
+  end
+
+  def password_token_valid?
+    (self.reset_password_sent_at + 4.hours) > Time.now.utc
+  end
+
+  def reset_password!(password)
+    self.reset_password_token = nil
+    self.password = password
+    self.save!
+  end
+
+  def generate_token
+    SecureRandom.hex(10)
   end
 
 end
