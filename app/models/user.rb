@@ -6,11 +6,13 @@ class User < ApplicationRecord
 
   has_many :goals, dependent: :destroy
   has_many :days, through: :goals, dependent: :destroy
-  has_many :choices, through: :days
+  has_many :choices, through: :days # destroyed by days?
+  has_many :made_foods, class_name: 'Food', foreign_key: 'user_id'
   has_many :foods, through: :choices
   has_many :categories, dependent: :destroy
 
   before_save :downcase_email
+  before_destroy :disown_made_foods
 
   def day
     self.days.last
@@ -70,6 +72,12 @@ class User < ApplicationRecord
 
   def generate_token
     SecureRandom.hex(10)
+  end
+
+  def disown_made_foods
+    self.made_foods.each do |food|
+      food.user_id = null
+    end
   end
 
 end

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<title>HAM password reset</title>
+  <style>
+    h1{background:linear-gradient(rgb(226, 123, 72),rgb(221, 103, 44));color:white;padding:10px;text-align:center;font-size:40px;margin:0px}
+    h2{text-align:center}
+    form{text-align:center}
+    label,input{margin:5px}
+  </style>
+</head>
+<body style="padding:0px;margin:0px">
+  <h1>HAM</h1>
+  
+  <h2>Password Reset</h2>
+
+  <form accept-charset="UTF-8" action="/password/reset" method="post">
+  <input name="email" type="hidden" value=<%=params[:email]%> >
+  <input name="token" type="hidden" value=<%=params[:id]%> >
+  <label>Password</label><br/>
+  <input name="password" type="password" min="6" />
+  <br/>
+  <label>Repeat Password</label><br/>
+  <input name="password_repeat" type="password" min="6" /><br/>
+  <input type='submit'/>
+  </form>
+</body>
+</html>
+

@@ -8,20 +8,20 @@ class Choice < ApplicationRecord
   before_destroy :decrement_choice_count
 
   def increment_choice_count
-    if self.food.choice_count
+    # if self.food.choice_count
       self.food.choice_count += 1
-    else
-      self.food.choice_count = 1
-    end
+    # else
+    #   self.food.choice_count = 1
+    # end
     self.food.save
   end
 
   def decrement_choice_count
-    if self.food.choice_count && self.food.choice_count > 1
+    # if self.food.choice_count && self.food.choice_count > 1
       self.food.choice_count -= 1
-    else
-      self.food.choice_count = 0
-    end
+    # else
+    #   self.food.choice_count = 0
+    # end
     self.food.save
   end
 
