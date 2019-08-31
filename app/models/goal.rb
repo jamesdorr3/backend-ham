@@ -6,7 +6,7 @@ class Goal < ApplicationRecord
 
   def change_days_goals
     self.days.each do |day|
-      day.goal = current_user.goals.filter{|goal| goal.id != self.id}[0]
+      day.goal = self.user.goals.filter{|goal| goal.id != self.id}[0]
       day.save
     end
   end

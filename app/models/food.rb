@@ -2,7 +2,7 @@ require 'faker'
 require 'lemmatizer'
 class Food < ApplicationRecord
   has_many :choices, dependent: :destroy
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :measures, dependent: :destroy
 
   def create_grams_measure

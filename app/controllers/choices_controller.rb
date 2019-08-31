@@ -3,8 +3,6 @@ class ChoicesController < ApplicationController
 
   def create
     food = Food.find(params[:foodId])
-    food.save
-    day = (current_user ? current_user.days.last : Day.all.first)
     choice = Choice.create(
       category_id: params[:categoryId], 
       day_id: params[:dayId], ############################# PROBLEMS
