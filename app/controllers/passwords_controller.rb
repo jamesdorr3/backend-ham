@@ -20,23 +20,23 @@ class PasswordsController < ActionController::Base
   end
 
   def reset
-    # byebug
-    token = params[:token].to_s
+    token = params[:user][:token].to_s
+    email = params[:user][:email].to_s
     
-    if params[:email].blank?
-      return render json: {error: 'Token not present'}
-    end
-
-    @user = User.find_by(reset_password_token: token)
-
+    @user = User.find_by(reset_password_token: token, email: email)
+    
     if @user.present? && @user.password_token_valid? ###
-      if @user.reset_password!(params[:password])
+      if @user.reset_password!(params[:user][:password])
         render json: {error: 'Password reset successful!'}, status: :ok
       else
         render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
       end
+    elsif User.find_by(email: email)
+      render json: {}, status: :precondition_failed
+    elsif User.find_by(reset_password_token: token)
+      render json: {}, status: :not_found
     else
-      render json: {error: 'Link invalid or expired'}, status: :not_found
+      render json: {error: 'Link invalid or expired'}, status: :bad_request
     end
   end
 
