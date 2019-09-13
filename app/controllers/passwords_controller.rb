@@ -1,3 +1,4 @@
+
 class PasswordsController < ActionController::Base
   skip_before_action :verify_authenticity_token
 
@@ -10,6 +11,7 @@ class PasswordsController < ActionController::Base
     # byebug
     if @user.present?
       @user.generate_password_token! ###
+      # @user.url_email = url_encode(@user.email)
       UserMailer.password_reset(@user).deliver_now
       render json: {error: "Email sent to #{@user.email}"}, status: :ok
     else

@@ -1,6 +1,7 @@
 class Measure < ApplicationRecord
-  belongs_to :food
+  belongs_to :food, dependent: :destroy
   has_many :choices, through: :food
+  before_create :extract_numbers_from_measure_names
 
   def self.find_or_create_and_extract_numbers(food:, amount:, grams:, name:)
     if name.match(/\A\d+(\/\d+)?\s/) || name.match(/\A\d?.\d+\s/)
@@ -30,6 +31,20 @@ class Measure < ApplicationRecord
           choice.save
         end
       end
+    end
+  end
+
+  def extract_numbers_from_measure_names
+    if self.name.match(/\A\d+(\/\d+)?\s/) || self.name.match(/\A\d?.\d+\s/)
+      name_split = self.name.split(' ')
+      new_amount = name_split[0].to_r.to_f
+      self.amount *= new_amount
+      self.name = name_split[1..].join(' ')
+      # self.save
+      # self.choices.select{|choice| choice.self_id == self.id}.each do |choice|
+      #   choice.amount *= new_amount
+      #   choice.save
+      # end
     end
   end
 

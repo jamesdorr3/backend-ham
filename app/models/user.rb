@@ -4,15 +4,16 @@ class User < ApplicationRecord
   validates :email, uniqueness: {case_sensitive: false}
   validates :username, uniqueness: {case_sensitive: false}
 
-  has_many :goals, dependent: :destroy
-  has_many :days, through: :goals, dependent: :destroy
+  has_many :goals
+  has_many :days, through: :goals
   has_many :choices, through: :days # destroyed by days?
   has_many :made_foods, class_name: 'Food', foreign_key: 'user_id'
   has_many :foods, through: :choices
-  has_many :categories, dependent: :destroy
+  has_many :categories
 
-  before_save :downcase_email
+  before_save {|user| user.email = user.email.downcase}
   before_destroy :disown_made_foods
+  before_create {|user| puts "HIeeeee #{user.username}"}
 
   def day
     self.days.last
@@ -50,10 +51,6 @@ class User < ApplicationRecord
     BCrypt::Password.new(digest).is_password?(token)
   end
 
-  def downcase_email
-    self.email = email.downcase
-  end
-
   def generate_password_token!
     self.reset_password_token = generate_token
     self.reset_password_sent_at = Time.now.utc
@@ -76,7 +73,8 @@ class User < ApplicationRecord
 
   def disown_made_foods
     self.made_foods.each do |food|
-      food.user_id = null
+      food.user_id = nil
+      food.save
     end
   end
 
