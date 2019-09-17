@@ -1,6 +1,5 @@
 
-class PasswordsController < ActionController::Base
-  skip_before_action :verify_authenticity_token
+class PasswordsController < ActionController::API
 
   def forgot
     if params[:email].blank?
@@ -38,26 +37,6 @@ class PasswordsController < ActionController::Base
     else
       render json: {error: 'Link invalid or expired'}, status: :bad_request
     end
-  end
-
-  def edit
-    # token = params[:id].to_s
-    
-    # if params[:email].blank?
-    #   return render json: {error: 'Token not present'}
-    # end
-
-    # @user = User.find_by(reset_password_token: token)
-
-    # if @user.present? && @user.password_token_valid? ###
-    #   if @user.reset_password!(params[:password])
-    #     render json: {error: 'Password reset successful!'}, status: :ok
-    #   else
-    #     render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
-    #   end
-    # else
-    #   render json: {error: 'Link invalid or expired'}, status: :not_found
-    # end
   end
 
 end
