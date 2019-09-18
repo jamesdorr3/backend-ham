@@ -28,15 +28,14 @@ class ChoicesController < ApplicationController
     choices.map do |choice|
       {choice: choice, food: food}
     end
-    # byebug
     render json: choices
   end
 
   def update
     choice = Choice.find(params[:id])
     choice.update(choice_params)
-    choice.save
     # byebug
+    # choice.save
   end
 
   def destroy
