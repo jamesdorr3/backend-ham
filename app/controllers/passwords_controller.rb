@@ -1,5 +1,6 @@
 
-class PasswordsController < ActionController::API
+class PasswordsController < ApplicationController
+  skip_before_action :authorized
 
   def forgot
     if params[:email].blank?
@@ -31,9 +32,9 @@ class PasswordsController < ActionController::API
         render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
       end
     elsif User.find_by(email: email)
-      render json: {}, status: :precondition_failed
+      render json: {error: '34'}, status: :precondition_failed
     elsif User.find_by(reset_password_token: token)
-      render json: {}, status: :not_found
+      render json: {eror: '36'}, status: :not_found
     else
       render json: {error: 'Link invalid or expired'}, status: :bad_request
     end
