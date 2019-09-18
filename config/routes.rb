@@ -8,8 +8,6 @@ Rails.application.routes.draw do
   resources :foods
   resources :users
   resources :auth, only: [:create, :edit]
-  resources :passwords, only: [:reset, :edit]
-  resources :password_resets,     only: [:new, :create, :edit, :update]
   # resources :account_activations, only: [:edit]
   get '/email_confirmation', to: 'users#email_confirmation'
   post '/search/make_choice', to: 'search#make_choice'
