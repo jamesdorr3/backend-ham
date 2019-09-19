@@ -1,4 +1,43 @@
 class Category < ApplicationRecord
-  belongs_to :user, dependent: :delete
+  belongs_to :day, dependent: :delete
   has_many :choices
+
+  def dup_with_choices(day)
+    new_category = self.dup
+    new_category.day = day
+    new_category.save
+    self.choices.each do |choice|
+      new_choice = choice.dup
+      new_choice.day_id = day.id
+      new_choice.save
+    end
+  end
+
+  def self.migrate_to_dynamic_categories ## Make all categories
+    Day.all.each do |day|
+      Category.create(day: day, name: "Breakfast") if not Category.find_by(day: day, name: "Breakfast")
+      Category.create(day: day, name: "Lunch") if not Category.find_by(day: day, name: "Lunch")
+      Category.create(day: day, name: "Snacks") if not Category.find_by(day: day, name: "Snacks")
+      Category.create(day: day, name: "Dinner") if not Category.find_by(day: day, name: "Dinner")
+    end
+
+    Choice.all.each do |choice|
+      day = Day.find(choice.day_id)
+      category = choice.category
+      day_category = day.categories.find_by(name: category.name)
+      if day_category
+        choice.update(category: day_category)
+      else
+        new_category = Category.create(name: category.name, user_id: choice.category.user_id, day: day)
+        choice.update(category: new_category)
+      end
+    end
+
+    Category.all.each do |cat|
+      if not cat.day
+        cat.destroy
+      end
+    end
+
+  end
 end

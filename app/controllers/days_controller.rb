@@ -1,10 +1,14 @@
 class DaysController < ApplicationController
 
+  # after_create :generate_categories
+
   def create
     # byebug
     date = params['date'][0,10].split('/')
     date = date[1] + '/' + date[0] + '/' + date[2]
-    day = Day.create(goal: current_user.goals.last, date: date.to_date)
+    goal = current_user.goals.last
+    day = Day.create(goal: goal, date: date.to_date)
+    day.generate_categories
     render json: day
   end
 
@@ -20,18 +24,27 @@ class DaysController < ApplicationController
 
   def destroy
     day = Day.find(params[:id])
+    # byebug
+    day.choices.destroy_all
+    day.categories.destroy_all
     day.destroy
   end
 
   def copy
     day = Day.find(params[:id])
-    newDay = Day.create(goal: day.goal, date: Date.today, name: day.name)
-    day.choices.each do |choice|
-      newChoice = choice.dup
-      newChoice.day = newDay
-      newChoice.save
+    new_day = Day.create(goal: day.goal, date: Date.today, name: day.name)
+    day.categories.each do |category|
+      category.dup_with_choices(new_day)
+      # new_cat = cat.dup
+      # new_cat.day = new_day
+      # new_cat.save
     end
-    render json: newDay
+    # day.choices.each do |choice|
+    #   new_choice = choice.dup
+    #   new_choice.day = new_day
+    #   new_choice.save
+    # end
+    render json: new_day
   end
   
   private

@@ -1,7 +1,6 @@
 class Choice < ApplicationRecord
   belongs_to :food, optional: true, dependent: :destroy, counter_cache: :choice_count
-  belongs_to :day, dependent: :delete
-  belongs_to :category
+  belongs_to :category, dependent: :delete
   has_one :measure
 
   # before_create :increment_choice_count
