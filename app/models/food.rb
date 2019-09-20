@@ -1,7 +1,7 @@
 require 'faker'
 require 'lemmatizer'
 class Food < ApplicationRecord
-  has_many :choices
+  has_many :choices, dependent: :destroy
   belongs_to :user, foreign_key: :user_id, optional: true
   has_many :measures, dependent: :destroy
 
