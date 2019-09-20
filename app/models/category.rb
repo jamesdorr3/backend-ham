@@ -38,6 +38,34 @@ class Category < ApplicationRecord
         cat.destroy
       end
     end
-
   end
+
+  def self.calculate_macros
+    Category.all.each do |cat|
+      cat.calculate_macros
+    end
+  end
+
+  def calculate_macros
+    self.calories = 0
+    self.fat = 0
+    self.carbs = 0
+    self.protein = 0
+    self.choices.each do |choice|
+      food = choice.food
+      measure = Measure.find(choice.measure_id)
+      grams = measure.grams * choice.amount
+      servings = grams / food.serving_grams
+      calories = servings * food.calories
+      self.calories += calories
+      fat = servings * food.fat
+      self.fat += fat
+      carbs = servings * food.carbs
+      self.carbs += carbs
+      protein = servings * food.protein
+      self.protein += protein
+    end
+    self.save
+  end
+
 end

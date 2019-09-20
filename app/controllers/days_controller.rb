@@ -8,7 +8,7 @@ class DaysController < ApplicationController
     date = date[1] + '/' + date[0] + '/' + date[2]
     goal = current_user.goals.last
     day = Day.create(goal: goal, date: date.to_date)
-    day.generate_categories
+    # day.generate_categories
     render json: day
   end
 

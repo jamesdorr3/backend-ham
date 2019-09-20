@@ -4,6 +4,11 @@ class Choice < ApplicationRecord
 
   # before_create :increment_choice_count
   before_destroy :decrement_choice_count
+  after_commit :calculate_category_macros
+
+  def calculate_category_macros
+    self.category.calculate_macros
+  end
 
   # def increment_choice_count
   #   # if self.food.choice_count
