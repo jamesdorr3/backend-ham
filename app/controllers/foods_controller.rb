@@ -45,7 +45,7 @@ class FoodsController < ApplicationController
         render json: {favorites: [food], internal: nil}
       end
     elsif search_phrase.match?(/\A(\d{1,3}.){2}\d{1,3}\Z/)
-      search_phrase = search_phrase.split('.')
+      search_phrase = search_phrase.split(/\D/)
       fat = search_phrase[0].to_i
       carbs = search_phrase[1].to_i
       protein = search_phrase[2].to_i
@@ -62,7 +62,16 @@ class FoodsController < ApplicationController
         food.protein*100 / macro_sum > protein - 1 &&
         food.protein*100 / macro_sum > protein - 1
       end
-      render json: {favorites: foods, internal: nil}
+      categories = Category.all.select do |cat|
+        macro_sum = cat.fat + cat.carbs + cat.protein
+        cat.fat*100 / macro_sum < fat + 1 &&
+        cat.fat*100 / macro_sum > fat - 1 &&
+        cat.carbs*100 / macro_sum > carbs - 1 &&
+        cat.carbs*100 / macro_sum > carbs - 1 &&
+        cat.protein*100 / macro_sum > protein - 1 &&
+        cat.protein*100 / macro_sum > protein - 1
+      end
+      render json: {favorites: foods, categories: categories, internal: nil}
     else
       if current_user && current_user.foods.length >= 10
         favorites = select_favorites(current_user.foods, search_phrase)
