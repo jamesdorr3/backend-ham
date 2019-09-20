@@ -4,8 +4,8 @@ class User < ApplicationRecord
   validates :email, uniqueness: {case_sensitive: false}
   validates :username, uniqueness: {case_sensitive: false}
 
-  has_many :goals
-  has_many :days, through: :goals
+  has_many :goals, dependent: :destroy
+  has_many :days, through: :goals, dependent: :destroy
   has_many :categories, through: :days
   has_many :choices, through: :categories # destroyed by days?
   has_many :made_foods, class_name: 'Food', foreign_key: 'user_id'

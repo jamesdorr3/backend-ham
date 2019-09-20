@@ -25,8 +25,8 @@ class DaysController < ApplicationController
   def destroy
     day = Day.find(params[:id])
     # byebug
-    day.choices.destroy_all
-    day.categories.destroy_all
+    # day.choices.destroy_all
+    # day.categories.destroy_all
     day.destroy
   end
 
