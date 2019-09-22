@@ -55,6 +55,7 @@ class Category < ApplicationRecord
       food = choice.food
       measure = Measure.find(choice.measure_id)
       measure.grams = 0.0 if measure.grams == nil
+      choice.amount = 0.00 if choice.amount == nil
       grams = measure.grams * choice.amount
       servings = grams / food.serving_grams
       calories = servings * food.calories
