@@ -36,6 +36,7 @@ class Measure < ApplicationRecord
           else
             choice.amount = new_amount
           end
+          choice.amount = 0.0 if choice.amount == nil
           choice.save
         end
       end
