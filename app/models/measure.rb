@@ -31,7 +31,11 @@ class Measure < ApplicationRecord
         measure.name = name_split[1..].join(' ')
         measure.save
         measure.choices.select{|choice| choice.measure_id == measure.id}.each do |choice|
-          choice.amount *= new_amount
+          if choice.amount
+            choice.amount *= new_amount
+          else
+            choice.amount = new_amount
+          end
           choice.save
         end
       end
