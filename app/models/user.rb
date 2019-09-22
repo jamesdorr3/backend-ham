@@ -5,15 +5,29 @@ class User < ApplicationRecord
   validates :username, uniqueness: {case_sensitive: false}
 
   has_many :goals, dependent: :destroy
-  has_many :days, through: :goals, dependent: :destroy
+  has_many :days, through: :goals
   has_many :categories, through: :days
   has_many :choices, through: :categories # destroyed by days?
   has_many :made_foods, class_name: 'Food', foreign_key: 'user_id'
   has_many :foods, through: :choices
 
-  before_save {|user| user.email = user.email.downcase}
+  before_save :downcase_email_and_username
   before_destroy :disown_made_foods
-  before_create {|user| puts "HIeeeee #{user.username}"}
+
+  # def destroy
+  #   self.disown_made_foods
+  #   self.choices.delete_all
+  #   self.categories.delete_all
+  #   self.days.delete_all
+  #   self.goals.delete_all
+  #   self.delete
+  # end
+
+  def downcase_email_and_username
+    self.email = self.email.downcase
+    self.username = self.username.downcase
+    self.save
+  end
 
   def day
     self.days.last

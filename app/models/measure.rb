@@ -1,5 +1,5 @@
 class Measure < ApplicationRecord
-  belongs_to :food, dependent: :destroy
+  belongs_to :food
   has_many :choices, through: :food
   before_create :extract_numbers_from_measure_names
 

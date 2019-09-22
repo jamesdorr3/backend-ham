@@ -4,7 +4,7 @@ class Day < ApplicationRecord
   has_many :choices, through: :categories
   has_many :foods, through: :choices
 
-  after_create :generate_categories
+  # after_create :generate_categories
 
   def unique_categories
     self.categories.uniq

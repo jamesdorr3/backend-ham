@@ -8,16 +8,15 @@ class GoalsController < ApplicationController
 
   def create
     goal = Goal.create(goals_params)
+    day = Day.find(params[:day_id])
+    day.update(goal: goal)
     render json: goal
   end
 
   def destroy
     goal = Goal.find(params[:id])
-    # goal.days.each do |day|
-    #   day.goal = current_user.goals.filter{|x| x.id != goal.id}[0]
-    #   day.save
-    # end
-    goal.destroy
+    goal.change_days_goals
+    goal.delete
   end
 
   private
