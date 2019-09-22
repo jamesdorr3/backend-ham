@@ -34,7 +34,8 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.perform_deliveries = true
-  host = 'localhost:3001'
+  # host = 'localhost:3001'
+  host = 'https://gmail.com'
   config.action_mailer.default_url_options = { from: 'ham.macros@gmail.com', host: host, protocol: 'https' }
 
   config.action_mailer.perform_caching = false
