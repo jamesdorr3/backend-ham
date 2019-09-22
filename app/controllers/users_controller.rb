@@ -19,12 +19,12 @@ class UsersController < ApplicationController
     @user = User.create(user_params)
     @user.create_activation_digest
     if @user.valid?
-      Category.create(user: @user, name: 'Breakfast')
-      Category.create(user: @user, name: 'Lunch')
-      Category.create(user: @user, name: 'Snacks')
-      Category.create(user: @user, name: 'Dinner')
       goal = Goal.create(user: @user, name: 'Macro Goals', calories: 0, fat: 0, carbs: 0, protein: 0)
-      Day.create(goal: goal, date: Date.today)
+      day = Day.create(goal: goal, date: Date.today)
+      Category.create(name: 'Breakfast', day: day)
+      Category.create(name: 'Lunch', day: day)
+      Category.create(name: 'Snacks', day: day)
+      Category.create(name: 'Dinner', day: day)
       @token = encode_token({ user_id: @user.id })
       UserMailer.welcome_email(@user).deliver_now
       render json: { error: "Activation email sent to #{@user.email}"}

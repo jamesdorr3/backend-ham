@@ -1,8 +1,6 @@
 class Goal < ApplicationRecord
   belongs_to :user
-  has_many :days
-
-  before_destroy :change_days_goals
+  has_many :days, dependent: :destroy
 
   def change_days_goals
     self.days.each do |day|
@@ -10,4 +8,5 @@ class Goal < ApplicationRecord
       day.save
     end
   end
+
 end
