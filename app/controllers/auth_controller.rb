@@ -15,7 +15,7 @@ class AuthController < ApplicationController
         jwt: token
         }, status: :accepted
     elsif @user && !@user.activated_at
-      UserMailer.welcome_email(@user).deliver_now
+      # UserMailer.welcome_email(@user).deliver_now
       render json: { message: 'A confirmation email has been sent'}, status: :unauthorized
     else
       # puts @user.errors.full_messages
