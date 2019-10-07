@@ -34,8 +34,9 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.perform_deliveries = true
-  host = 'localhost:3001'
-  config.action_mailer.default_url_options = { from: 'jamesdorr3@gmail.com', host: host, protocol: 'https' }
+  # host = 'localhost:3001'
+  host = 'https://gmail.com'
+  config.action_mailer.default_url_options = { from: 'ham.macros@gmail.com', host: host, protocol: 'https' }
 
   config.action_mailer.perform_caching = false
 
@@ -44,7 +45,7 @@ Rails.application.configure do
     address: 'smtp.gmail.com',
     port: 587,
     domain: 'gmail.com',
-    user_name: 'jamesdorr3@gmail.com',
+    user_name: 'ham.macros@gmail.com',
     password: Rails.application.credentials[:gmail][:password], #Rails.application.credentials[:gmail][:password], ######################33
     authentication: 'plain'
     # enable_starttls_auto: true

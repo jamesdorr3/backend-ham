@@ -5,7 +5,7 @@ class ChoicesController < ApplicationController
     food = Food.find(params[:foodId])
     choice = Choice.create(
       category_id: params[:categoryId], 
-      day_id: params[:dayId], ############################# PROBLEMS
+      day_id: params[:dayId], # perfect, doesn't save if no dayId
       food: food,
       amount: food.measures.first.amount, 
       measure_id: food.measures.first.id, 
