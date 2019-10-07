@@ -18,7 +18,6 @@ class AuthController < ApplicationController
     #   UserMailer.welcome_email(@user).deliver_now
     #   render json: { message: 'A confirmation email has been sent'}, status: :unauthorized
     else
-      # puts @user.errors.full_messages
       render json: { message: 'Invalid username or password' }, status: :unauthorized
     end
   end

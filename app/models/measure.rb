@@ -23,11 +23,20 @@ class Measure < ApplicationRecord
       if measure.name.match(/\A\d+(\/\d+)?\s/) || measure.name.match(/\A\d?.\d+\s/)
         name_split = measure.name.split(' ')
         new_amount = name_split[0].to_r.to_f
-        measure.amount *= new_amount
+        if measure.amount
+          measure.amount *= new_amount
+        else
+          measure.amount = new_amount
+        end
         measure.name = name_split[1..].join(' ')
         measure.save
         measure.choices.select{|choice| choice.measure_id == measure.id}.each do |choice|
-          choice.amount *= new_amount
+          if choice.amount
+            choice.amount *= new_amount
+          else
+            choice.amount = new_amount
+          end
+          choice.amount = 0.0 if choice.amount == nil
           choice.save
         end
       end

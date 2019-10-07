@@ -56,8 +56,6 @@ class SearchController < ApplicationController
       food = Food.find_or_create_and_update(resp)
       measures = food.find_or_create_measures_by_resp(resp)
     end
-
-    day = (current_user ? current_user.days.last : Day.all.first) ############# nil ?
     # byebug
     if measures.first && measures.first.amount
       amount = measures.first.amount
@@ -68,12 +66,12 @@ class SearchController < ApplicationController
     choice = Choice.create(
       food: food,
       category_id: params['categoryId'], 
-      day_id: params['dayId'], ############################# PROBLEMS ? 
+      day_id: params['dayId'], # perfect, doesn't save if no dayId
       amount: amount, 
       measure_id: measures.first.id, 
-      index: Time::new.to_i)
-    puts choice.errors.full_messages
-    # to_render = {choice: choice, food: food}
+      index: Time::new.to_i
+    )
+
     render json: {choice: choice, food: food, measures: measures}
   end
 
