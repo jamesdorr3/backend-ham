@@ -26,9 +26,9 @@ class UsersController < ApplicationController
       Category.create(name: 'Snacks', day: day)
       Category.create(name: 'Dinner', day: day)
       @token = encode_token({ user_id: @user.id })
-      UserMailer.welcome_email(@user).deliver_now
-      render json: { error: "Activation email sent to #{@user.email}"}
-      # render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
+      # UserMailer.welcome_email(@user).deliver_now
+      # render json: { error: "Activation email sent to #{@user.email}"}
+      render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
     else
       render json: { error: 'Username or Email already in use' }, status: :not_acceptable
     end

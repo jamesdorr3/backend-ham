@@ -8,15 +8,15 @@ class AuthController < ApplicationController
       @user = User.find_by(email: user_login_params[:username_or_email].downcase)
     end
     # byebug
-    if @user && @user.authenticate(user_login_params[:password]) && @user.activated_at
+    if @user && @user.authenticate(user_login_params[:password])# && @user.activated_at
       token = encode_token({user_id: @user.id})
       render json: { 
         user: UserSerializer.new(@user),
         jwt: token
         }, status: :accepted
-    elsif @user && !@user.activated_at
-      UserMailer.welcome_email(@user).deliver_now
-      render json: { message: 'A confirmation email has been sent'}, status: :unauthorized
+    # elsif @user && !@user.activated_at
+    #   UserMailer.welcome_email(@user).deliver_now
+    #   render json: { message: 'A confirmation email has been sent'}, status: :unauthorized
     else
       # puts @user.errors.full_messages
       render json: { message: 'Invalid username or password' }, status: :unauthorized

@@ -26,7 +26,6 @@ class User < ApplicationRecord
   def downcase_email_and_username
     self.email = self.email.downcase
     self.username = self.username.downcase
-    self.save
   end
 
   def day
