@@ -2,7 +2,7 @@ class Category < ApplicationRecord
   belongs_to :day
   has_many :choices, dependent: :destroy
 
-  def dup_with_choices(day) ## works?
+  def dup_with_choices(day) 
     new_category = self.dup
     new_category.day = day
     new_category.save!

@@ -23,9 +23,8 @@ class FoodsController < ApplicationController
 
     def check_choice_count(foods)
       foods.each do |food|
-        if !(food.choice_count && food.choice_count >= 0)
-          food.choice_count = food.choices.count
-          food.save
+        if !food.choice_count || food.choice_count < 0
+          food.update!(choice_count: food.choices.count)
         end
       end
     end
