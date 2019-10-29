@@ -23,7 +23,7 @@ class FoodsController < ApplicationController
 
     def check_choice_count(foods)
       foods.each do |food|
-        if !food.choice_count && food.choice_count >= 0
+        if !(food.choice_count && food.choice_count >= 0)
           food.choice_count = food.choices.count
           food.save
         end
@@ -33,7 +33,6 @@ class FoodsController < ApplicationController
     def select_favorites(foods,search_phrase)
       favorites = search(foods, search_phrase)
       check_choice_count(foods)
-      # favorites = favorites.select{|x| x.choice_count > 0}
       favorites = favorites.sort {|a, b| b.choice_count <=> a.choice_count}
       return favorites.uniq[0,10]
     end
