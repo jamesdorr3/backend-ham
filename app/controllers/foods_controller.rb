@@ -23,7 +23,7 @@ class FoodsController < ApplicationController
 
     def check_choice_count(foods)
       foods.each do |food|
-        if !food.choice_count
+        if !food.choice_count && food.choice_count >= 0
           food.choice_count = food.choices.count
           food.save
         end
@@ -62,16 +62,17 @@ class FoodsController < ApplicationController
         food.protein*100 / macro_sum > protein - 1 &&
         food.protein*100 / macro_sum > protein - 1
       end
-      categories = Category.all.select do |cat|
-        macro_sum = cat.fat + cat.carbs + cat.protein
-        cat.fat*100 / macro_sum < fat + 1 &&
-        cat.fat*100 / macro_sum > fat - 1 &&
-        cat.carbs*100 / macro_sum > carbs - 1 &&
-        cat.carbs*100 / macro_sum > carbs - 1 &&
-        cat.protein*100 / macro_sum > protein - 1 &&
-        cat.protein*100 / macro_sum > protein - 1
-      end
-      render json: {favorites: foods, categories: categories, internal: nil}
+      # categories = Category.all.select do |cat|
+      #   macro_sum = cat.fat + cat.carbs + cat.protein
+      #   cat.fat*100 / macro_sum < fat + 1 &&
+      #   cat.fat*100 / macro_sum > fat - 1 &&
+      #   cat.carbs*100 / macro_sum > carbs - 1 &&
+      #   cat.carbs*100 / macro_sum > carbs - 1 &&
+      #   cat.protein*100 / macro_sum > protein - 1 &&
+      #   cat.protein*100 / macro_sum > protein - 1
+      # end
+      # byebug
+      render json: {favorites: foods, internal: nil}
     else
       if current_user && current_user.foods.length >= 10
         favorites = select_favorites(current_user.foods, search_phrase)
